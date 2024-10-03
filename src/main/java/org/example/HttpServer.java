@@ -36,6 +36,7 @@ public class HttpServer {
 
             ObjectMapper objectMapper = new ObjectMapper(); //damit kann man JSON in Java-Objekte konvertieren & umgekehrt
 
+            //API Endpoints:
             //POST /users (Registrierung):
             if (firstLine.startsWith("POST /users")) {
                 User user = objectMapper.readValue(requestBody.toString(), User.class); //requestBody wird zu Java-Objket umgewanldet (der Klasse User) -> Variablen des user Objekt bekommen direkt die Daten aus dem JSON Body

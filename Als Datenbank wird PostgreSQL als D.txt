@@ -1,0 +1,6 @@
+Als Datenbank wird PostgreSQL als Docker verwendet. Um Datenbank zu starten:
+1. Docker Desktop öffnen
+Im Terminal (egal welches Verzeichnis):
+2. docker start mctg-postgres
+3. Überprüfen, ob Docker Container läuft:
+docker ps im Terminal

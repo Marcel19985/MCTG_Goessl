@@ -1,8 +1,11 @@
 package org.example;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.UUID; //für UUID (primary key als UUID anstatt fortlaufend)
 
 public class User {
+    public UUID id;
+
     @JsonProperty("Username") //"Username" im JSON-Body wird username
     public String username;
 
@@ -16,7 +19,8 @@ public class User {
     public User() {}
 
     //Konstruktor überladen:
-    public User(String username, String password, String token) {
+    public User(UUID id, String username, String password, String token) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.token = token;

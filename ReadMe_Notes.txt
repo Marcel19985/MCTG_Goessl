@@ -10,7 +10,7 @@ docker exec -it mctg-postgres psql -U user -d mctg_db
 Um SQL Konsole zu beenden: \q
 
 SQL Script ausführen:
-docker exec -i mctg-postgres psql -U user -d mctg_db < create_db.sql
+Get-Content create_db.sql | docker exec -i mctg-postgres psql -U user -d mctg_db
 Test, ob Script ausgeführt wurde: SQL Konsole starten:
 docker exec -it mctg-postgres psql -U user -d mctg_db
 Z.B. Tabelle users ansehen:

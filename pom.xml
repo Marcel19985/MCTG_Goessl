@@ -14,19 +14,34 @@
     </properties>
 
     <dependencies>
-        <!-- Updated PostgreSQL JDBC -->
+        <!--PostgreSQL-->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.6.0</version> <!-- Latest version to fix vulnerabilities -->
         </dependency>
 
-        <!-- Updated Jackson Databind -->
+        <!-- Jackson-->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.15.2</version> <!-- Latest version to fix vulnerabilities -->
         </dependency>
+
+        <!-- für Tests: -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.9.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.9.3</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 

@@ -1,8 +1,7 @@
 package models;
 
 import database.DatabaseConnector;
-
-import java.sql.Connection;
+import java.sql.Connection; //für prepared statemenet object conn
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,14 +9,14 @@ import java.sql.SQLException;
 public class UserService {
 
     //Check, ob Benutzer schon in Tabelle existiert:
-    public boolean userExists(String username) throws SQLException {
+    public boolean userExists(String username) throws SQLException { //durch throws SQLException benötigt man keinen catch block
         try (Connection conn = DatabaseConnector.connect()) {
             String query = "SELECT 1 FROM users WHERE username = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, username);
+            stmt.setString(1, username); //übergabe der Parameter (1 für ersten Parameter)
 
             ResultSet rs = stmt.executeQuery();
-            return rs.next(); // Returns true if user exists
+            return rs.next(); //gibt true zurück falls user existiert (falls mindestens eine Zeile der Tabelle zurückgegeben wurde)
         }
     }
 
@@ -32,7 +31,7 @@ public class UserService {
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, username);
             stmt.setString(2, password);
-            stmt.setString(3, generateToken(username));  // Generate a token for the user
+            stmt.setString(3, generateToken(username));
 
             int rowsInserted = stmt.executeUpdate();
             return rowsInserted > 0;  //Falls eingefügt, return true
@@ -40,7 +39,7 @@ public class UserService {
     }
 
     //Token Generierung:
-    private String generateToken(String username) {
+    public String generateToken(String username) {
         return username + "-mtcgToken";
     }
 

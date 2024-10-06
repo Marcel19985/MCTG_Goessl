@@ -1,13 +1,12 @@
 package server;
 
 //Klassen für Netzwerkkommunikation:
-
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Main {
     public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(10001)) {  //erstellt ServerSocket, der auf Port 10001 hört; Klasse ServerSocket hat einen Konstruktur, der den Port 10001 öffnet
+        try (ServerSocket serverSocket = new ServerSocket(10001)) {  //erstellt ServerSocket, der auf Port 10001 hört; Klasse ServerSocket hat einen Konstruktur, der den Port 10001 (reservierter Port, sollte verfügbar sein) öffnet
             //Block wird nur ausgeführt wenn Bedingung in try true ist:
             System.out.println("Server started on port 10001, waiting for connections...");
 

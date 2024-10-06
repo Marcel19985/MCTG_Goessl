@@ -1,4 +1,4 @@
-package org.example;
+package models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.UUID; //für UUID (primary key als UUID anstatt fortlaufend)

@@ -1,4 +1,6 @@
-package org.example;
+package models;
+
+import database.DatabaseConnector;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

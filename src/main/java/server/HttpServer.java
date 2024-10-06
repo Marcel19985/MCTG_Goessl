@@ -1,6 +1,9 @@
-package org.example;
+package server;
 
 import com.fasterxml.jackson.databind.ObjectMapper; //Jackson: Für Umwandlung von JSON zu Java-Objekten und umgekehrt
+import models.User;
+import models.UserService;
+
 import java.io.*; //für BufferedReader + BufferedWriter
 import java.net.Socket;
 import java.sql.SQLException;

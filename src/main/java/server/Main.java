@@ -1,6 +1,7 @@
-package org.example;
+package server;
 
 //Klassen für Netzwerkkommunikation:
+
 import java.net.ServerSocket;
 import java.net.Socket;
 

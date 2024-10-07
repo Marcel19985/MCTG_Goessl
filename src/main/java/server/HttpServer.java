@@ -12,6 +12,7 @@ public class HttpServer {
 
     private static final UserService userService = new UserService(); //Erstellt UserService Objekt
 
+    //für requestline und header lieber ein eigenes Objekt erstellen und speichern
     public static void handleClient(Socket clientSocket) { //Infos vom Client werden übergeben
         //BufferedReader: Daten vom Client lesen; BufferedWriter: für Antwort an den Client
         //durch Argumente im try- Block werden BufferedReader und BufferedWriter automatisch geschlossen (muss ansonsten extra mit close geschlossen werden)
@@ -43,7 +44,7 @@ public class HttpServer {
             //POST /users (Registrierung):
             if (firstLine.startsWith("POST /users")) {
                 User user = objectMapper.readValue(requestBody.toString(), User.class); //requestBody wird zu Java-Objket umgewanldet (der Klasse User) -> Variablen des user Objekt bekommen direkt die Daten aus dem JSON Body
-                boolean success = userService.registerUser(user.username, user.password);
+                boolean success = userService.registerUser(user);
                 if (success) {
                     String response = "HTTP/1.1 201 Created\r\nContent-Type: text/plain\r\n\r\nUser registered successfully";
                     out.write(response);
@@ -57,7 +58,7 @@ public class HttpServer {
             //POST /sessions (Login)
             if (firstLine.startsWith("POST /sessions")) {
                 User user = objectMapper.readValue(requestBody.toString(), User.class);
-                String token = userService.loginUser(user.username, user.password);
+                String token = userService.loginUser(user);
                 if (token != null) {
                     String response = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{\"token\":\"" + token + "\"}"; //backslshr+backslashn = Zeilenumbruch im HTTP Protokoll
                     out.write(response);

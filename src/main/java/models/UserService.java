@@ -9,6 +9,7 @@ import java.sql.SQLException;
 public class UserService {
 
     //Check, ob Benutzer schon in Tabelle existiert:
+    //kann man mit SQL Exception regelen weil in Datenbank username sowieso unique sein muss
     public boolean userExists(String username) throws SQLException { //durch throws SQLException benötigt man keinen catch block
         try (Connection conn = DatabaseConnector.connect()) {
             String query = "SELECT 1 FROM users WHERE username = ?";
@@ -21,17 +22,17 @@ public class UserService {
     }
 
     //Registrierung:
-    public boolean registerUser(String username, String password) throws SQLException {
-        if (userExists(username)) {
+    public boolean registerUser(User user) throws SQLException { //lieber nur Objekt übergeben statt string
+        if (userExists(user.getUsername())) {
             return false;  //Benutzer exisitiert bereits
         }
 
         try (Connection conn = DatabaseConnector.connect()) {
             String query = "INSERT INTO users (username, password, token) VALUES (?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, username);
-            stmt.setString(2, password);
-            stmt.setString(3, generateToken(username));
+            stmt.setString(1, user.getUsername());
+            stmt.setString(2, user.getPassword());
+            stmt.setString(3, generateToken(user.getUsername()));
 
             int rowsInserted = stmt.executeUpdate();
             return rowsInserted > 0;  //Falls eingefügt, return true
@@ -44,12 +45,12 @@ public class UserService {
     }
 
     //Login: gibt Token zurück (user spezifisch)
-    public String loginUser(String username, String password) throws SQLException {
+    public String loginUser(User user) throws SQLException {
         try (Connection conn = DatabaseConnector.connect()) {
             String query = "SELECT token FROM users WHERE username = ? AND password = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, username);
-            stmt.setString(2, password);
+            stmt.setString(1, user.getUsername());
+            stmt.setString(2, user.getPassword());
 
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {

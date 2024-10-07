@@ -5,6 +5,8 @@ import java.sql.Connection; //für prepared statemenet object conn
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
+
 
 public class UserService {
 
@@ -32,7 +34,7 @@ public class UserService {
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getPassword());
-            stmt.setString(3, generateToken(user.getUsername()));
+            stmt.setString(3, generateToken(user));
 
             int rowsInserted = stmt.executeUpdate();
             return rowsInserted > 0;  //Falls eingefügt, return true
@@ -40,8 +42,8 @@ public class UserService {
     }
 
     //Token Generierung:
-    public String generateToken(String username) {
-        return username + "-mtcgToken";
+    public String generateToken(User user) {
+        return user.getUsername() + "-mtcgToken";
     }
 
     //Login: gibt Token zurück (user spezifisch)
@@ -70,6 +72,14 @@ public class UserService {
 
             ResultSet rs = stmt.executeQuery();
             return rs.next();  //gibt true zurück, wenn Token valide ist
+        }
+    }
+
+    //löscht alle Datensätze aus Tabelle users
+    public void clearTable() throws SQLException {
+        try (Connection connection = DatabaseConnector.connect();
+             PreparedStatement statement = connection.prepareStatement("DELETE FROM users")) {
+            statement.executeUpdate();
         }
     }
 }

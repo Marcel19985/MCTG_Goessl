@@ -6,9 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="8baed113-4de9-4350-9dee-fb253f253015" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/create_db.sql" beforeDir="false" afterPath="$PROJECT_DIR$/create_db.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/models/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/HttpServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/HttpServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/models/UserServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/models/UserServiceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,6 +43,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.Main.executor": "Run",
+    "JUnit.UserServiceTest.executor": "Run",
     "JUnit.UserTest.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
@@ -69,6 +71,7 @@
       <recent name="" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="models" />
       <recent name="org.example" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
@@ -134,7 +137,7 @@
       <workItem from="1727964464799" duration="3325000" />
       <workItem from="1728209541949" duration="5668000" />
       <workItem from="1728219466905" duration="4298000" />
-      <workItem from="1728324825756" duration="2020000" />
+      <workItem from="1728324825756" duration="6769000" />
     </task>
     <servers />
   </component>
@@ -156,7 +159,7 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/java/org/example/UserTest.java</url>
+          <url>file://$PROJECT_DIR$/src/test/java/models/UserTest.java</url>
           <line>19</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>

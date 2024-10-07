@@ -6,10 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8baed113-4de9-4350-9dee-fb253f253015" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create_db.sql" beforeDir="false" afterPath="$PROJECT_DIR$/create_db.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/models/UserServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/models/UserServiceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,8 +16,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="JUnit5 Test Class" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -137,7 +134,7 @@
       <workItem from="1727964464799" duration="3325000" />
       <workItem from="1728209541949" duration="5668000" />
       <workItem from="1728219466905" duration="4298000" />
-      <workItem from="1728324825756" duration="6769000" />
+      <workItem from="1728324825756" duration="8498000" />
     </task>
     <servers />
   </component>

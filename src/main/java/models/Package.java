@@ -10,7 +10,7 @@ public class Package {
         if (cards.size() != 5) {
             throw new IllegalArgumentException("A package must contain exactly 5 cards.");
         }
-        this.cards = new ArrayList<>(cards);
+        this.cards = new ArrayList<>(cards); //übergebene Liste wird nun in Liste des Objekts gespeichert
     }
 
     public List<Card> getCards() {

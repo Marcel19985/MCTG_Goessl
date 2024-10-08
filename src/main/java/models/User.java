@@ -121,15 +121,12 @@ public class User {
         System.out.println("User's Stack: " + stack);
     }
 
-    // Method to buy a package
     public boolean buyPackage(Package pkg) {
         if (coins < 5) {
             System.out.println("Insufficient coins to buy a package.");
             return false;
         }
-
-        // Deduct 5 coins and add the package cards to the user's stack
-        coins -= 5;
+        coins -= 5; //Package kostet 5 coins
         for (Card card : pkg.getCards()) {
             stack.addCard(card);
         }

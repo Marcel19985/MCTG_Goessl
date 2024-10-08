@@ -1,72 +1,56 @@
 package server;
 
-import com.fasterxml.jackson.databind.ObjectMapper; //Jackson: Für Umwandlung von JSON zu Java-Objekten und umgekehrt
+import com.fasterxml.jackson.databind.ObjectMapper;
 import models.User;
 import models.UserService;
 
-import java.io.*; //für BufferedReader + BufferedWriter
+import java.io.*;
 import java.net.Socket;
 import java.sql.SQLException;
 
 public class HttpServer {
 
-    private static final UserService userService = new UserService(); //Erstellt UserService Objekt
+    private static final UserService userService = new UserService();
 
-    //für requestline und header lieber ein eigenes Objekt erstellen und speichern
-    public static void handleClient(Socket clientSocket) { //Infos vom Client werden übergeben
-        //BufferedReader: Daten vom Client lesen; BufferedWriter: für Antwort an den Client
-        //durch Argumente im try- Block werden BufferedReader und BufferedWriter automatisch geschlossen (muss ansonsten extra mit close geschlossen werden)
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())); //clientSocket.getInputStream() liest eingehende Daten des Client, InputStreamReder wandelt diesen Bytestrom in Zeichen um, BufferedReader bewirkt effizientes lesen vom Zeichenstrom
-             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) { //
+    public static void handleClient(Socket clientSocket) {
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
 
-            String firstLine = in.readLine(); //speichert erste Zeile des BufferedReader -> request line: HTTP-Methode(POST,GET,...), Pfad (z.B. \\users) und HTTP Version
-            StringBuilder requestBody = new StringBuilder(); //StringBuilder ist praktisch für effiziente Stringoperationen
-            String line;
-            int contentLength = 0;
+            //Parse request line:
+            String firstLine = in.readLine();
+            HttpRequestLine requestLine = HttpRequestLine.parse(firstLine);
 
-            //Lesen des HTTP-Header, bis eine leere Zeile erreicht wird, die die Trennung zwischen Headern und Body markiert: Länge des Request-Body speichern
-            while (!(line = in.readLine()).isEmpty()) {
-                if (line.startsWith("Content-Length:")) {
-                    contentLength = Integer.parseInt(line.split(":")[1].trim()); //Extrahiert die Länge des Inhalts aus dem Header und konvertiert ihn in eine Ganzzahl.
-                } //split teilt Zeichenkette beim Doppelpunkt; [1] zweiter Index im Array; trim() entfernt Leerzeichen
+            //Parse headers:
+            HttpHeaders headers = HttpHeaders.parse(in);
+
+            //RequestBody auslesen:
+            int contentLength = headers.getContentLength();
+            StringBuilder requestBody = new StringBuilder();
+            if (contentLength > 0) {
+                char[] bodyChars = new char[contentLength];
+                in.read(bodyChars, 0, contentLength);
+                requestBody.append(bodyChars);
             }
 
-            //Body auslesen
-            if (contentLength > 0) { //wenn body nicht leer
-                char[] bodyChars = new char[contentLength]; //character Array am heap
-                in.read(bodyChars, 0, contentLength);  //liest gesamten Body
-                requestBody.append(bodyChars); //Speichert Body in Stringbuilder
-            }
-
-            ObjectMapper objectMapper = new ObjectMapper(); //damit kann man JSON in Java-Objekte konvertieren & umgekehrt
+            ObjectMapper objectMapper = new ObjectMapper();
 
             //API Endpoints:
-            //POST /users (Registrierung):
-            if (firstLine.startsWith("POST /users")) {
-                User user = objectMapper.readValue(requestBody.toString(), User.class); //requestBody wird zu Java-Objket umgewanldet (der Klasse User) -> Variablen des user Objekt bekommen direkt die Daten aus dem JSON Body
+            if ("POST".equals(requestLine.getMethod()) && "/users".equals(requestLine.getPath())) {
+                User user = objectMapper.readValue(requestBody.toString(), User.class);
                 boolean success = userService.registerUser(user);
-                if (success) {
-                    String response = "HTTP/1.1 201 Created\r\nContent-Type: text/plain\r\n\r\nUser registered successfully";
-                    out.write(response);
-                } else {
-                    String response = "HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\nUser already exists";
-                    out.write(response);
-                }
+                String response = success
+                        ? "HTTP/1.1 201 Created\r\nContent-Type: text/plain\r\n\r\nUser registered successfully"
+                        : "HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\nUser already exists";
+                out.write(response);
                 out.flush();
-            }
-
-            //POST /sessions (Login)
-            if (firstLine.startsWith("POST /sessions")) {
+            } else if ("POST".equals(requestLine.getMethod()) && "/sessions".equals(requestLine.getPath())) {
                 User user = objectMapper.readValue(requestBody.toString(), User.class);
                 String token = userService.loginUser(user);
-                if (token != null) {
-                    String response = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{\"token\":\"" + token + "\"}"; //backslshr+backslashn = Zeilenumbruch im HTTP Protokoll
-                    out.write(response);
-                } else {
-                    String response = "HTTP/1.1 401 Unauthorized\r\nContent-Type: text/plain\r\n\r\nInvalid login credentials";
-                    out.write(response);
-                }
-                out.flush(); //sendet Antwort an Client
+                String response = token != null
+                        ? "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{\"token\":\"" + token + "\"}"
+                        : "HTTP/1.1 401 Unauthorized\r\nContent-Type: text/plain\r\n\r\nInvalid login credentials";
+                out.write(response);
+                out.flush();
             }
 
         } catch (IOException | SQLException e) {

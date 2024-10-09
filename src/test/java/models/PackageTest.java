@@ -18,11 +18,11 @@ class PackageTest {
     @Test
     public void testAddValidPackage() throws SQLException {
         List<Card> cards = List.of(
-                new Card(UUID.randomUUID(), "Card1", 10),
-                new Card(UUID.randomUUID(), "Card2", 15),
-                new Card(UUID.randomUUID(), "Card3", 20),
-                new Card(UUID.randomUUID(), "Card4", 25),
-                new Card(UUID.randomUUID(), "Card5", 30)
+                CardFactory.createCard(UUID.randomUUID(), "FireGoblin", 10.0),
+                CardFactory.createCard(UUID.randomUUID(), "WaterSpell", 15.0),
+                CardFactory.createCard(UUID.randomUUID(), "NormalKnight", 20.0),
+                CardFactory.createCard(UUID.randomUUID(), "FireSpell", 25.0),
+                CardFactory.createCard(UUID.randomUUID(), "WaterGoblin", 30.0)
         );
         Package pkg = new Package(cards);
         PackageService packageService = new PackageService();
@@ -33,8 +33,8 @@ class PackageTest {
     @Test
     public void testAddPackageWithLessThanFiveCards() {
         List<Card> cards = List.of(
-                new Card(UUID.randomUUID(), "Card1", 10),
-                new Card(UUID.randomUUID(), "Card2", 15)
+                CardFactory.createCard(UUID.randomUUID(), "FireSpell", 25.0),
+                CardFactory.createCard(UUID.randomUUID(), "WaterGoblin", 30.0)
         );
         assertThrows(IllegalArgumentException.class, () -> new Package(cards));
     }
@@ -42,12 +42,12 @@ class PackageTest {
     @Test
     public void testAddPackageWithMoreThanFiveCards() {
         List<Card> cards = List.of(
-                new Card(UUID.randomUUID(), "Card1", 10),
-                new Card(UUID.randomUUID(), "Card2", 15),
-                new Card(UUID.randomUUID(), "Card3", 20),
-                new Card(UUID.randomUUID(), "Card4", 25),
-                new Card(UUID.randomUUID(), "Card5", 30),
-                new Card(UUID.randomUUID(), "Card6", 35)
+                CardFactory.createCard(UUID.randomUUID(), "FireGoblin", 10.0),
+                CardFactory.createCard(UUID.randomUUID(), "WaterSpell", 15.0),
+                CardFactory.createCard(UUID.randomUUID(), "NormalKnight", 20.0),
+                CardFactory.createCard(UUID.randomUUID(), "FireSpell", 25.0),
+                CardFactory.createCard(UUID.randomUUID(), "WaterGoblin", 30.0),
+                CardFactory.createCard(UUID.randomUUID(), "FireGoblin", 35.0)
         );
         assertThrows(IllegalArgumentException.class, () -> new Package(cards));
     }

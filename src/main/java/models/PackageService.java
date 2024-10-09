@@ -1,49 +1,47 @@
 package models;
 
+//für SQL statements:
 import database.DatabaseConnector;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.UUID;
+import java.sql.SQLException; //kann SQL Fehler als exception ausgeben
 
 public class PackageService {
 
-    public boolean addPackage(Package pkg) throws SQLException { //Fügt Package und dessen Karten zu Tabelle packages und cards hinzu:
+    public boolean addPackage(Package pkg) throws SQLException {
+        String insertPackageSQL = "INSERT INTO packages (package_id) VALUES (?)";
+        String insertCardSQL = "INSERT INTO cards (card_id, name, damage, type, element_type, package_id) VALUES (?, ?, ?, ?, ?, ?)"; //sowohl MonsterCard, als auch SpellCard werden in gleicher Tabelle gespeichert (Unterscheidung ist "type")
 
-        String insertPackageSQL = "INSERT INTO packages DEFAULT VALUES RETURNING package_id"; //Statement, um neuen Datensatz (id) in die Tabelle Packages einzufügen
-        String insertCardSQL = "INSERT INTO cards (card_id, name, damage, package_id) VALUES (?, ?, ?, ?)"; //Statement für Hinzufügen einer Card
+        try (Connection conn = DatabaseConnector.connect()) { //Verbindung zur Datenbank
+            conn.setAutoCommit(false); //keine automatische Transaktions- commits in Datenbank (es sollen entweder Package und Cards eingefügt werden oder garnichts davon)
 
-        try (Connection conn = DatabaseConnector.connect()) {
-            conn.setAutoCommit(false); //Falls insert in eine Datenbank funktioniert, wird sie nicht direkt gespeichert (sollen beide inserts in beide Tabellen funktionieren oder garkeine)
-            UUID packageId;
+            //Package in Table packages einfügen:
             try (PreparedStatement insertPackageStmt = conn.prepareStatement(insertPackageSQL)) {
-                var resultSet = insertPackageStmt.executeQuery(); //SQL command ausführen und RückgabeSet speichern
-                System.out.println(resultSet);
-                if (resultSet.next()) { //Überprüfen, ob Datensatz eingefügt wurde
-                    packageId = (UUID) resultSet.getObject("package_id"); //packageId aus resultSet extrahieren, da packageId für Fremdschlüssel in Cards verwendet wird
-                } else {
-                    conn.rollback(); //Rollback falls Datensatz nicht hinzugefügt werden konnte
-                    throw new SQLException("Failed to insert package.");
-                }
+                insertPackageStmt.setObject(1, pkg.getId(), java.sql.Types.OTHER);
+                insertPackageStmt.executeUpdate();
             }
 
-            //Jede Card in Cards Tabelle einfügen:
+            //Card's in cards einfügen:
             try (PreparedStatement insertCardStmt = conn.prepareStatement(insertCardSQL)) {
-                for (Card card : pkg.getCards()) { //Iteriere durch alle Cards des Packages
+                for (Card card : pkg.getCards()) { //iteriert über alle Karten im Package
                     insertCardStmt.setObject(1, card.getId(), java.sql.Types.OTHER);
                     insertCardStmt.setString(2, card.getName());
                     insertCardStmt.setDouble(3, card.getDamage());
-                    insertCardStmt.setObject(4, packageId, java.sql.Types.OTHER); //Fremdschlüssel
-                    insertCardStmt.addBatch(); //Als batch ausführen ist effizienter
+                    insertCardStmt.setString(4, card instanceof SpellCard ? "Spell" : "Monster"); //wenn card SpellCard ist, dann Type = Spell, ansonsten Type = Monster
+                    insertCardStmt.setString(5, card.getElementType().name());
+                    insertCardStmt.setObject(6, pkg.getId(), java.sql.Types.OTHER); // Reference package UUID
+                    insertCardStmt.addBatch();
                 }
-                insertCardStmt.executeBatch();
+                insertCardStmt.executeBatch(); //als batch hinzufügen ist effiziernter
             }
 
-            conn.commit(); //Wenn beide SQL inserts funktioniert haben, kann committed werden:
+            conn.commit(); // Commit Transaktion, denn jetzt sind sowohl Packages und auch Card's eingefügt
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false; //Fehler aufgetreten
+            return false;
         }
     }
+
+
 }

@@ -24,6 +24,8 @@ CREATE TABLE packages (
 CREATE TABLE cards (
     card_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
-    damage INT NOT NULL,
+    damage DOUBLE PRECISION NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    element_type VARCHAR(50) NOT NULL,
     package_id UUID REFERENCES packages(package_id) ON DELETE CASCADE
 );

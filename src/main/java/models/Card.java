@@ -1,27 +1,30 @@
 package models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.UUID;
+import java.util.UUID; //für UUID (keine fortlaufenden Nummern als Primärschlüssel)
 
-public class Card {
-    private final UUID id;
-    private final String name;
-    private final double damage;
-    //In PDF-Angabe gibt es zusätzlich Element Type aber nicht im curl script!
-    /*
-    private final CardType type;
-    public enum CardType {
-        SPELL,
-        MONSTER
-    }*/
+public abstract class Card {
+    protected final UUID id;
+    protected final String name;
+    protected final double damage;
+    protected final ElementType elementType;
+
+    public enum ElementType {
+        FIRE, WATER, NORMAL
+    }
 
     //Konstruktor:
-    @JsonCreator
-    public Card(@JsonProperty("Id") UUID id, @JsonProperty("Name") String name, @JsonProperty("Damage") int damage) {
+    public Card(UUID id, String name, double damage, ElementType elementType) {
         this.id = id;
         this.name = name;
         this.damage = damage;
+        //! Wahrscheinlich wird if und else nicht gebraucht werden:
+        if (elementType != null) {
+            this.elementType = elementType;
+        }
+        else {
+            System.out.println("TEST");
+            this.elementType = ElementType.NORMAL;
+        }
     }
 
     public UUID getId() {
@@ -36,12 +39,19 @@ public class Card {
         return damage;
     }
 
+    public ElementType getElementType() {
+        return elementType;
+    }
+
+    public abstract String getCardType();
+
     @Override
     public String toString() {
         return "Card{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", damage=" + damage +
+                ", elementType=" + elementType +
                 '}';
     }
 }

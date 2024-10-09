@@ -3,6 +3,8 @@ package models;
 import java.util.ArrayList;
 import java.util.List;
 
+//alle Karten, die ein Benutzer besitzt
+
 public class Stack {
     private final List<Card> cards;
 

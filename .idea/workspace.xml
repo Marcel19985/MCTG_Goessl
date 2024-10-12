@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8baed113-4de9-4350-9dee-fb253f253015" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/HttpServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/HttpServer.java" afterDir="false" />
-    </list>
+    <list default="true" id="8baed113-4de9-4350-9dee-fb253f253015" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -47,7 +45,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "git-widget-placeholder": "aed7bc39",
+    "git-widget-placeholder": "a1a92fad",
     "kotlin-language-version-configured": "true",
     "last_directory_selection": "C:/Users/marce/OneDrive/Studium/FHTechnikumWien/3. Semester/7_Java/MCTG_Goessl_LocalRep/src/main/java/org/example",
     "last_opened_file_path": "C:/Users/marce/OneDrive/Studium/FHTechnikumWien/3. Semester/7_Java/GitHubProject/_MTCG_-main",

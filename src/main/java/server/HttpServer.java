@@ -50,9 +50,9 @@ public class HttpServer {
                 User user = objectMapper.readValue(requestBody.toString(), User.class);
                 boolean success = userService.registerUser(user);
                 if (success) {
-                    out.write("HTTP/1.1 201 Created\r\nContent-Type: text/plain\r\n\r\nPackage added successfully");
+                    out.write("HTTP/1.1 201 Created\r\nContent-Type: text/plain\r\n\r\nUser created successfully");
                 } else {
-                    out.write("HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nFailed to add package");
+                    out.write("HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nFailed to create user");
                 }
                 out.flush();
             } else if ("POST".equals(requestLine.getMethod()) && "/sessions".equals(requestLine.getPath())) { //Login von user

@@ -77,6 +77,8 @@ public class HttpServer {
                 out.write("HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nFailed to add package");
             }
             out.flush();
+        } else {
+            out.write("HTTP/1.1 405 Method Not Allowed");
         }
     }
 

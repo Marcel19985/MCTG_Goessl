@@ -10,24 +10,8 @@ import java.util.UUID;
 
 public class UserService {
 
-    //Check, ob Benutzer schon in Tabelle existiert:
-    //kann man mit SQL Exception regelen weil in Datenbank username sowieso unique sein muss
-    public boolean userExists(String username) throws SQLException { //durch throws SQLException benötigt man keinen catch block
-        try (Connection conn = DatabaseConnector.connect()) {
-            String query = "SELECT 1 FROM users WHERE username = ?";
-            PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, username); //übergabe der Parameter (1 für ersten Parameter)
-
-            ResultSet rs = stmt.executeQuery();
-            return rs.next(); //gibt true zurück falls user existiert (falls mindestens eine Zeile der Tabelle zurückgegeben wurde)
-        }
-    }
-
     //Registrierung:
     public boolean registerUser(User user) throws SQLException { //lieber nur Objekt übergeben statt string
-        if (userExists(user.getUsername())) {
-            return false;  //Benutzer exisitiert bereits
-        }
 
         try (Connection conn = DatabaseConnector.connect()) {
             String query = "INSERT INTO users (username, password, token) VALUES (?, ?, ?)";
@@ -36,8 +20,14 @@ public class UserService {
             stmt.setString(2, user.getPassword());
             stmt.setString(3, generateToken(user));
 
-            int rowsInserted = stmt.executeUpdate();
-            return rowsInserted > 0;  //Falls eingefügt, return true
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("23505")) { //unique contraint violation 23505: checkt, ob username eingefügt werden soll, der bereits existiert
+                return false;
+            } else {
+                throw e;  //Weiterwerfen von anderer Exception
+            }
         }
     }
 

@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8baed113-4de9-4350-9dee-fb253f253015" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MonsterTradingCards.exercise.curl.bat" beforeDir="false" afterPath="$PROJECT_DIR$/MonsterTradingCards.exercise.curl.bat" afterDir="false" />
-    </list>
+    <list default="true" id="8baed113-4de9-4350-9dee-fb253f253015" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

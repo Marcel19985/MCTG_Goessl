@@ -28,9 +28,9 @@ public class HttpServer {
             User user = objectMapper.readValue(requestBody.toString(), User.class);
             boolean success = userService.registerUser(user);
             if (success) {
-                out.write("HTTP/1.1 201 Created\\r\\nContent-Type: text/plain\\r\\n\\r\\nUser registered successfully");
+                out.write("HTTP/1.1 201 Created\r\nContent-Type: text/plain\r\n\r\nUser registered successfully");
             } else {
-                out.write("HTTP/1.1 400 Bad Request\\r\\nContent-Type: text/plain\\r\\n\\r\\nUser already exists");
+                out.write("HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\nUser already exists");
             }
             out.flush();
         } else if ("/sessions".equals(requestLine.getPath())) { //Login von user
@@ -38,9 +38,9 @@ public class HttpServer {
             User user = objectMapper.readValue(requestBody.toString(), User.class);
             String token = userService.loginUser(user);
             if (token != null) {
-                out.write("HTTP/1.1 200 OK\\r\\nContent-Type: application/json\\r\\n\\r\\n{\\\"token\\\":\\\"\" + token + \"\\\"}");
+                out.write("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{\"token\":\"" + token + "\"}");
             } else {
-                out.write("HTTP/1.1 401 Unauthorized\\r\\nContent-Type: text/plain\\r\\n\\r\\nInvalid login credentials");
+                out.write("HTTP/1.1 401 Unauthorized\r\nContent-Type: text/plain\r\n\r\nInvalid login credentials");
             }
             out.flush();
         } else if ("/packages".equals(requestLine.getPath())) { //Hinzufügen von Package

@@ -34,34 +34,6 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-<<<<<<< Updated upstream
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.CardTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PackageTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserServiceTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserTest.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_directory_selection&quot;: &quot;C:/Users/marce/OneDrive/Studium/FHTechnikumWien/3. Semester/7_Java/MCTG_Goessl_LocalRep/src/main/java/org/example&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/marce/OneDrive/Studium/FHTechnikumWien/3. Semester/7_Java/4_Präsenz2/shapes&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/marce/OneDrive/Studium/FHTechnikumWien/3. Semester/7_Java/MCTG_Goessl/src/main/java/org/example/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Problems&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
-=======
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.Main.executor": "Run",
@@ -88,9 +60,8 @@
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "editor.preferences.fonts.default",
     "vue.rearranger.settings.migration": "true"
->>>>>>> Stashed changes
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
@@ -164,7 +135,8 @@
       <workItem from="1728219466905" duration="4298000" />
       <workItem from="1728324825756" duration="8983000" />
       <workItem from="1728393574061" duration="12381000" />
-      <workItem from="1728553218688" duration="8714000" />
+      <workItem from="1728553218688" duration="10738000" />
+      <workItem from="1728734969373" duration="4326000" />
     </task>
     <servers />
   </component>

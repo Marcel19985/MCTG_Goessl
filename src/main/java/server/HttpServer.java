@@ -21,7 +21,42 @@ import java.util.UUID; //UID anstatt fortlaufende ID's in Datenbank
 
 public class HttpServer {
 
-    public static void handlePostRequest (HttpRequestLine requestLine, HttpHeaders headers, StringBuilder requestBody, BufferedWriter out) throws IOException, SQLException {
+    public void createResponseDoesNotExist(BufferedWriter out) throws IOException {
+        out.write("HTTP/1.1 501 Not Implemented\r\nContent-Type: text/plain\r\n\r\nThis method is not implemented yet.");
+        out.flush();
+    }
+
+    public void handleGetRequest(HttpRequestLine requestLine, HttpHeaders headers, StringBuilder requestBody, BufferedWriter out) throws IOException {
+        if (requestLine.getPath().startsWith("/users")) {
+            createResponseDoesNotExist(out);
+        } else if ("/cards".equals(requestLine.getPath())) {
+            createResponseDoesNotExist(out);
+        } else if (requestLine.getPath().startsWith("/deck")) {
+            createResponseDoesNotExist(out);
+        } else if ("/stats".equals(requestLine.getPath())) {
+            createResponseDoesNotExist(out);
+        } else if ("/scoreboard".equals(requestLine.getPath())) {
+            createResponseDoesNotExist(out);
+        } else if ("/tradings".equals(requestLine.getPath())) {
+            createResponseDoesNotExist(out);
+        }
+    }
+
+    public void handlePutRequest(HttpRequestLine requestLine, HttpHeaders headers, StringBuilder requestBody, BufferedWriter out) throws IOException {
+        if (requestLine.getPath().startsWith("/deck")) {
+            createResponseDoesNotExist(out);
+        } else if (requestLine.getPath().startsWith("/users")) {
+            createResponseDoesNotExist(out);
+        }
+    }
+
+    public void handleDeleteRequest(HttpRequestLine requestLine, HttpHeaders headers, StringBuilder requestBody, BufferedWriter out) throws IOException {
+        if (requestLine.getPath().startsWith("/tradings")) {
+            createResponseDoesNotExist(out);
+        }
+    }
+
+    public void handlePostRequest (HttpRequestLine requestLine, HttpHeaders headers, StringBuilder requestBody, BufferedWriter out) throws IOException, SQLException {
         ObjectMapper objectMapper = new ObjectMapper();
         if ("/users".equals(requestLine.getPath())) { //Registrierung von user
             final UserService userService = new UserService();
@@ -77,12 +112,19 @@ public class HttpServer {
                 out.write("HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nFailed to add package");
             }
             out.flush();
+        } else if (requestLine.getPath().startsWith("/tradings")) {
+            createResponseDoesNotExist(out);
+        } else if ("/battles".equals(requestLine.getPath())) {
+            createResponseDoesNotExist(out);
+        } else if ("/transactions/packages".equals(requestLine.getPath())) {
+            createResponseDoesNotExist(out);
         } else {
-            out.write("HTTP/1.1 405 Method Not Allowed");
+            out.write("HTTP/1.1 405 Method Not Allowed\r\nContent-Type: text/plain\r\n\r\nThis HTTP method is not supported.");
+            out.flush();
         }
     }
 
-    public static void handleClient(Socket clientSocket) {
+    public void handleClient(Socket clientSocket) {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
              BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
 
@@ -105,10 +147,18 @@ public class HttpServer {
             //API Endpoints:
             if ("POST".equals(requestLine.getMethod())) {
                 handlePostRequest(requestLine, headers, requestBody, out);
+            } else if ("GET".equals(requestLine.getMethod())) {
+                handleGetRequest(requestLine, headers, requestBody, out);
+            } else if ("PUT".equals(requestLine.getMethod())) {
+                handlePutRequest(requestLine, headers, requestBody, out);
+            } else if ("DELETE".equals(requestLine.getMethod())) {
+                handleDeleteRequest(requestLine, headers, requestBody, out);
             }
 
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
     }
+
+
 }

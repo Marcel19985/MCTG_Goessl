@@ -14,7 +14,8 @@ public class Main {
                 Socket clientSocket = serverSocket.accept(); //Sobald Client Verbunden ist, wird Socket Objekt zurück gegeben
                 new Thread(() -> {
                     try {
-                        HttpServer.handleClient(clientSocket); //ruft handleClient auf
+                        HttpServer httpServer = new HttpServer();
+                        httpServer.handleClient(clientSocket); //ruft handleClient auf
                     } catch (Exception e) {
                         e.printStackTrace(); //Exception
                     } finally {

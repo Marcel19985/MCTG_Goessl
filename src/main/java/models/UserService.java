@@ -14,12 +14,10 @@ public class UserService {
     public boolean registerUser(User user) throws SQLException { //lieber nur Objekt übergeben statt string
 
         try (Connection conn = DatabaseConnector.connect()) {
-            String query = "INSERT INTO users (username, password, token) VALUES (?, ?, ?)";
+            String query = "INSERT INTO users (username, password) VALUES (?, ?)";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getPassword());
-            stmt.setString(3, generateToken(user));
-
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -39,14 +37,21 @@ public class UserService {
     //Login: gibt Token zurück (user spezifisch)
     public String loginUser(User user) throws SQLException {
         try (Connection conn = DatabaseConnector.connect()) {
-            String query = "SELECT token FROM users WHERE username = ? AND password = ?";
-            PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getPassword());
+            String selectQuery = "SELECT * FROM users WHERE username = ? AND password = ?";
+            PreparedStatement selectStmt = conn.prepareStatement(selectQuery);
+            selectStmt.setString(1, user.getUsername());
+            selectStmt.setString(2, user.getPassword());
 
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getString("token");  //return Token
+            ResultSet rs = selectStmt.executeQuery();
+            if (rs.next()) { //wenn username und password übereinstimmen:
+                String token = generateToken(user); //generiere token
+                String updateQuery = "UPDATE users SET token = ? WHERE username = ?"; //speichere Token
+                PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
+                updateStmt.setString(1, token);
+                updateStmt.setString(2, user.getUsername());
+                updateStmt.executeUpdate();
+
+                return token;
             }
         }
         return null;  //Login fehlgeschlagen

@@ -121,7 +121,7 @@ public class User {
         System.out.println("User's Stack: " + stack);
     }
 
-    public boolean buyPackage(Package pkg) {
+    public boolean buyPackage(Package pkg) { //noch nicht in Verwendung
         if (coins < 5) {
             System.out.println("Insufficient coins to buy a package.");
             return false;

@@ -57,8 +57,8 @@ public class UserService {
         return null;  //Login fehlgeschlagen
     }
 
-    //Überprüfung, ob Token zu einem User gehört:
-    public boolean validateToken(String username, String token) throws SQLException {
+    //Überprüfung, ob Token zu einem User gehört: wird vermutlich nicht in dieser Art verwendet werden!
+    /*public boolean validateToken(String username, String token) throws SQLException {
         try (Connection conn = DatabaseConnector.connect()) {
             String query = "SELECT 1 FROM users WHERE username = ? AND token = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
@@ -68,7 +68,7 @@ public class UserService {
             ResultSet rs = stmt.executeQuery();
             return rs.next();  //gibt true zurück, wenn Token valide ist
         }
-    }
+    }*/
 
     //löscht alle Datensätze aus Tabelle users
     public void clearTable() throws SQLException {

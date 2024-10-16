@@ -12,9 +12,9 @@ public class CardFactory {
             elementType = Card.ElementType.WATER;
         }
 
-        //Card wird created:
+        //Card wird created: je nachdem ob spellCard oder monsterCard
         if (name.contains("Spell")) { //SpellCard
-            return new SpellCard(id, name, damage, elementType);
+            return new SpellCard(id, name, damage, elementType); //Aufruf vom Konstruktor
         } else { //MonsterCard
             return new MonsterCard(id, name, damage, elementType);
         }

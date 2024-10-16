@@ -14,17 +14,10 @@ public abstract class Card {
 
     //Konstruktor:
     public Card(UUID id, String name, double damage, ElementType elementType) {
-        this.id = id;
+        this.id = id; //ID kommt aus CURL, daher nicht erst bei Datenbankoperation erstellt
         this.name = name;
         this.damage = damage;
-        //! Wahrscheinlich wird if und else nicht gebraucht werden:
-        if (elementType != null) {
-            this.elementType = elementType;
-        }
-        else {
-            System.out.println("TEST");
-            this.elementType = ElementType.NORMAL;
-        }
+        this.elementType = elementType;
     }
 
     public UUID getId() {
@@ -46,7 +39,7 @@ public abstract class Card {
     public abstract String getCardType();
 
     @Override
-    public String toString() {
+    public String toString() { //gibt Objekt als String zurück
         return "Card{" +
                 "id=" + id +
                 ", name='" + name + '\'' +

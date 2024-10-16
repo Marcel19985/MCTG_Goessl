@@ -9,7 +9,7 @@ Um mit Datenbank zu verbinden, um Änderungen zu machen (PostgreSQL Interaktivko
 docker exec -it mctg-postgres psql -U user -d mctg_db
 Um SQL Konsole zu beenden: \q
 
-SQL Script ausführen:
+SQL Script ausführen (legt alle Tabellen neu an - löscht daher Datensätze):
 Get-Content create_db.sql | docker exec -i mctg-postgres psql -U user -d mctg_db
 Test, ob Script ausgeführt wurde: SQL Konsole starten:
 docker exec -it mctg-postgres psql -U user -d mctg_db

@@ -33,5 +33,3 @@ public class Main {
         }
     }
 }
-//Interface kommt später noch eine gute Gelegenheit
-//Beim Registrierung, Anmeldung etc. könnte man aus dem Objekt ein JSON erstellen und wieder an den CLient zurückgeben

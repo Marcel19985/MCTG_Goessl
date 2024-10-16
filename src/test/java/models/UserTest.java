@@ -2,6 +2,7 @@ package models;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import services.UserService;
 
 import java.sql.SQLException;
 import java.util.UUID;
@@ -13,7 +14,7 @@ public class UserTest {
 
     @BeforeEach
     public void setUp() {
-        UUID testId = UUID.randomUUID();  // Generates a valid UUID
+        UUID testId = UUID.randomUUID();
         user = new User(testId, "testUser", "testPassword", "testToken");
     }
 

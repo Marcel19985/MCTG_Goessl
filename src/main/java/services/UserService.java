@@ -1,11 +1,12 @@
-package models;
+package services;
 
 import database.DatabaseConnector;
+import models.User;
+
 import java.sql.Connection; //für prepared statemenet object conn
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
 
 
 public class UserService {
@@ -24,7 +25,7 @@ public class UserService {
             if (e.getSQLState().equals("23505")) { //unique contraint violation 23505: checkt, ob username eingefügt werden soll, der bereits existiert
                 return false;
             } else {
-                throw e;  //Weiterwerfen von anderer Exception
+                throw e; //Weiterwerfen von anderer Exception
             }
         }
     }
@@ -58,7 +59,7 @@ public class UserService {
     }
 
     //Überprüfung, ob Token zu einem User gehört: wird vermutlich nicht in dieser Art verwendet werden!
-    /*public boolean validateToken(String username, String token) throws SQLException {
+    public boolean validateToken(String username, String token) throws SQLException {
         try (Connection conn = DatabaseConnector.connect()) {
             String query = "SELECT 1 FROM users WHERE username = ? AND token = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
@@ -68,9 +69,9 @@ public class UserService {
             ResultSet rs = stmt.executeQuery();
             return rs.next();  //gibt true zurück, wenn Token valide ist
         }
-    }*/
+    }
 
-    //löscht alle Datensätze aus Tabelle users
+    //löscht alle Datensätze aus Tabelle users (wird für einen Test benötigt):
     public void clearTable() throws SQLException {
         try (Connection connection = DatabaseConnector.connect();
              PreparedStatement statement = connection.prepareStatement("DELETE FROM users")) {

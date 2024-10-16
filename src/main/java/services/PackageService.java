@@ -1,7 +1,11 @@
-package models;
+package services;
 
 //für SQL statements:
 import database.DatabaseConnector;
+import models.Card;
+import models.Package;
+import models.SpellCard;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException; //kann SQL Fehler als exception ausgeben

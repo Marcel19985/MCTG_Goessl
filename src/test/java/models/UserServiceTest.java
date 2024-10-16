@@ -3,6 +3,7 @@ package models;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import services.UserService;
 
 import java.sql.SQLException;
 
@@ -28,8 +29,7 @@ class UserServiceTest {
 
     @Test
     public void testLoginUser() throws SQLException {
-        // Ensure the user is registered before login
-        userService.registerUser(user);
+        userService.registerUser(user); //User muss vor dem Login registriert sein
         assertEquals(userService.generateToken(user), userService.loginUser(user));
     }
 

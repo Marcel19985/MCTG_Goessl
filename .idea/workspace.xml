@@ -6,19 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="8baed113-4de9-4350-9dee-fb253f253015" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Beschreibungen und Anmerkungen zu MCTG.docx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Card.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Card.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/CardFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/CardFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/PackageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/PackageService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Stack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Stack.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/HttpHeaders.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/HttpHeaders.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/HttpRequestLine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/HttpRequestLine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/HttpServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/HttpServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/models/PackageTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/models/PackageTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/models/UserServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/models/UserServiceTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/models/UserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/models/UserTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dokumentation/Beschreibungen und Anmerkungen zu MCTG.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Dokumentation/Beschreibungen und Anmerkungen zu MCTG.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dokumentation/Klassendiagramm_Semesterprojekt.drawio" beforeDir="false" afterPath="$PROJECT_DIR$/Dokumentation/Klassendiagramm_Semesterprojekt.drawio" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,10 +49,10 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "git-widget-placeholder": "structure",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_directory_selection": "C:/Users/marce/OneDrive/Studium/FHTechnikumWien/3. Semester/7_Java/MCTG_Goessl_LocalRep/src/main/java/org/example",
-    "last_opened_file_path": "C:/Users/marce/OneDrive/Studium/FHTechnikumWien/3. Semester/7_Java/MCTG_Goessl_LocalRep/src/main/java/services",
+    "last_opened_file_path": "C:/Users/marce/OneDrive/Studium/FHTechnikumWien/3. Semester/7_Java/MCTG_Goessl_LocalRep/Dokumentation",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",

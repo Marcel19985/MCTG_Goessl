@@ -7,7 +7,8 @@
     <list default="true" id="8baed113-4de9-4350-9dee-fb253f253015" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Dokumentation/Beschreibungen und Anmerkungen zu MCTG.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Dokumentation/Beschreibungen und Anmerkungen zu MCTG.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dokumentation/Klassendiagramm_Semesterprojekt.drawio" beforeDir="false" afterPath="$PROJECT_DIR$/Dokumentation/Klassendiagramm_Semesterprojekt.drawio" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dokumentation/~$schreibungen und Anmerkungen zu MCTG.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dokumentation/~WRL2701.tmp" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +53,7 @@
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_directory_selection": "C:/Users/marce/OneDrive/Studium/FHTechnikumWien/3. Semester/7_Java/MCTG_Goessl_LocalRep/src/main/java/org/example",
-    "last_opened_file_path": "C:/Users/marce/OneDrive/Studium/FHTechnikumWien/3. Semester/7_Java/MCTG_Goessl_LocalRep/Dokumentation",
+    "last_opened_file_path": "C:/Users/marce/OneDrive/Studium/FHTechnikum/3. Semester/7_Java/MCTG_Goessl_LocalRep",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -151,6 +152,13 @@
       <workItem from="1729004210793" duration="5118000" />
       <workItem from="1729089059251" duration="4049000" />
       <workItem from="1729093201113" duration="3611000" />
+      <workItem from="1729106157682" duration="150000" />
+      <workItem from="1729110386234" duration="215000" />
+      <workItem from="1729779294613" duration="1518000" />
+      <workItem from="1730570890748" duration="10000" />
+      <workItem from="1732026803664" duration="3000" />
+      <workItem from="1732312738688" duration="2000" />
+      <workItem from="1733668081739" duration="729000" />
     </task>
     <servers />
   </component>

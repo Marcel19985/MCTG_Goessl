@@ -2,14 +2,15 @@ package services;
 
 //für SQL statements:
 import database.DatabaseConnector;
-import models.Card;
+import models.*;
 import models.Package;
-import models.SpellCard;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException; //kann SQL Fehler als exception ausgeben
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class PackageService {
@@ -49,67 +50,70 @@ public class PackageService {
         }
     }
 
-    public boolean acquirePackage(String token) throws SQLException {
+    public boolean acquirePackage(User user, UserService userService) throws SQLException {
         try (Connection conn = DatabaseConnector.connect()) {
-            // Verify user and coins
-            String userQuery = "SELECT id, coins FROM users WHERE token = ?";
-            PreparedStatement userStmt = conn.prepareStatement(userQuery);
-            userStmt.setString(1, token);
+            conn.setAutoCommit(false); // Start transaction
 
-            ResultSet userRs = userStmt.executeQuery();
-            if (!userRs.next()) {
-                throw new IllegalArgumentException("Invalid token.");
+            // Schritt 1: Ein verfügbares Paket auswählen
+            String packageQuery = "SELECT package_id FROM packages LIMIT 1 FOR UPDATE";
+            UUID packageId;
+
+            try (PreparedStatement packageStmt = conn.prepareStatement(packageQuery);
+                 ResultSet packageRs = packageStmt.executeQuery()) {
+
+                if (!packageRs.next()) {
+                    throw new IllegalStateException("No packages available.");
+                }
+                packageId = UUID.fromString(packageRs.getString("package_id"));
+                System.out.println("Acquired package ID: " + packageId);
             }
 
-            UUID userId = UUID.fromString(userRs.getString("id"));
-            int coins = userRs.getInt("coins");
+            // Schritt 2: Karten des Pakets abrufen
+            String cardsQuery = "SELECT card_id, name, damage FROM cards WHERE package_id = ?";
+            List<Card> cards = new ArrayList<>();
+            try (PreparedStatement cardsStmt = conn.prepareStatement(cardsQuery)) {
+                cardsStmt.setObject(1, packageId);
+                ResultSet rs = cardsStmt.executeQuery();
+                while (rs.next()) {
+                    UUID cardId = UUID.fromString(rs.getString("card_id"));
+                    String name = rs.getString("name");
+                    double damage = rs.getDouble("damage");
 
-            if (coins < 5) {
-                throw new IllegalStateException("Not enough coins.");
+                    cards.add(CardFactory.createCard(cardId, name, damage));
+                }
             }
 
-            // Get the first available package
-            String packageQuery = "SELECT package_id FROM packages LIMIT 1";
-            PreparedStatement packageStmt = conn.prepareStatement(packageQuery);
-            ResultSet packageRs = packageStmt.executeQuery();
-
-            if (!packageRs.next()) {
-                throw new IllegalStateException("No packages available.");
-            }
-
-            UUID packageId = UUID.fromString(packageRs.getString("package_id"));
-
-            // Deduct coins and assign package
-            conn.setAutoCommit(false);
-
-            try {
-                // Update coins
-                String updateCoinsQuery = "UPDATE users SET coins = coins - 5 WHERE id = ?";
-                PreparedStatement updateCoinsStmt = conn.prepareStatement(updateCoinsQuery);
-                updateCoinsStmt.setObject(1, userId);
-                updateCoinsStmt.executeUpdate();
-
-                // Insert package into user_packages
-                String assignPackageQuery = "INSERT INTO user_packages (user_id, package_id) VALUES (?, ?)";
-                PreparedStatement assignPackageStmt = conn.prepareStatement(assignPackageQuery);
-                assignPackageStmt.setObject(1, userId);
-                assignPackageStmt.setObject(2, packageId);
-                assignPackageStmt.executeUpdate();
-
-                // Delete package from packages table
-                String deletePackageQuery = "DELETE FROM packages WHERE package_id = ?";
-                PreparedStatement deletePackageStmt = conn.prepareStatement(deletePackageQuery);
-                deletePackageStmt.setObject(1, packageId);
-                deletePackageStmt.executeUpdate();
-
-                conn.commit();
-                return true;
-            } catch (SQLException e) {
+            // Schritt 3: Paket erwerben
+            if (!user.buyPackage(new Package(cards), userService, conn)) {
                 conn.rollback();
-                throw e;
+                return false;
             }
+
+            // Schritt 4: Paket löschen
+            System.out.println("Deleting package with ID: " + packageId);
+            deletePackageById(packageId, conn);
+
+            // Transaktion abschließen
+            conn.commit();
+            System.out.println("Transaction committed. Package deleted.");
+            return true;
+
+        } catch (IllegalStateException e) {
+            throw e;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
         }
     }
 
+
+    public void deletePackageById(UUID packageId, Connection conn) throws SQLException {
+        String deletePackageQuery = "DELETE FROM packages WHERE package_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(deletePackageQuery)) {
+            stmt.setObject(1, packageId);
+            int rowsAffected = stmt.executeUpdate();
+            System.out.println("Rows deleted: " + rowsAffected);
+        }
+    }
 
 }

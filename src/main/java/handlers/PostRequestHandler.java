@@ -92,31 +92,45 @@ public class PostRequestHandler {
             }
 
             String token = authHeader.substring("Bearer ".length());
-            PackageService packageService = new PackageService();
 
             try {
-                // Ruf die Methode im PackageService auf
-                boolean success = packageService.acquirePackage(token);
+                // Benutzer anhand des Tokens abrufen
+                UserService userService = new UserService();
+                User user = userService.getUserByToken(token);
+                if (user == null) {
+                    out.write("HTTP/1.1 401 Unauthorized\r\nContent-Type: text/plain\r\n\r\nInvalid token.");
+                    out.flush();
+                    return;
+                }
+
+                // Paket erwerben
+                PackageService packageService = new PackageService();
+                boolean success = packageService.acquirePackage(user, userService);
+
+                // Erfolgreiche Antwort
                 if (success) {
                     out.write("HTTP/1.1 201 Created\r\nContent-Type: text/plain\r\n\r\nPackage acquired successfully.");
                 } else {
-                    out.write("HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nFailed to acquire package.");
+                    out.write("HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nAn unknown error occurred.");
                 }
                 out.flush();
-            } catch (IllegalArgumentException e) {
-                out.write("HTTP/1.1 401 Unauthorized\r\nContent-Type: text/plain\r\n\r\n" + e.getMessage());
-                out.flush();
+
             } catch (IllegalStateException e) {
+                // Antwort für spezifische Fehler (z. B. zu wenig Coins)
                 out.write("HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\n" + e.getMessage());
                 out.flush();
             } catch (SQLException e) {
                 e.printStackTrace();
                 out.write("HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nDatabase error occurred.");
                 out.flush();
+            } catch (Exception e) {
+                e.printStackTrace();
+                out.write("HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nUnexpected error occurred.");
+                out.flush();
             }
-
         } else {
-            out.write("HTTP/1.1 405 Method Not Allowed\r\nContent-Type: text/plain\r\n\r\nThis HTTP method is not supported.");
+            // Fallback für andere Endpoints
+            out.write("HTTP/1.1 405 Method Not Allowed\r\nContent-Type: text/plain\r\n\r\nThis endpoint is not supported.");
             out.flush();
         }
     }

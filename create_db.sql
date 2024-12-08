@@ -1,10 +1,9 @@
 -- Aktiviert die UUID-Erweiterung, falls nicht vorhanden:
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS cards;
-DROP TABLE IF EXISTS packages;
-DROP TABLE IF EXISTS user_packages;
+DROP TABLE IF EXISTS cards CASCADE;
+DROP TABLE IF EXISTS packages CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
 
 -- Tabelle für user
 CREATE TABLE users (
@@ -29,12 +28,6 @@ CREATE TABLE cards (
     damage DOUBLE PRECISION NOT NULL,
     type VARCHAR(50) NOT NULL,
     element_type VARCHAR(50) NOT NULL,
-    package_id UUID REFERENCES packages(package_id) ON DELETE CASCADE
-);
-
--- Zwischentabelle für user und packages
-CREATE TABLE user_packages (
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     package_id UUID REFERENCES packages(package_id) ON DELETE CASCADE,
-    PRIMARY KEY (user_id, package_id)
+    user_id UUID REFERENCES users(id) -- NULL, wenn nicht zugeordnet
 );

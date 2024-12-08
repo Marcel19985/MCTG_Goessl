@@ -1,12 +1,15 @@
 package services;
 
 import database.DatabaseConnector;
+import models.Card;
 import models.User;
+import models.Package;
 
 import java.sql.Connection; //für prepared statemenet object conn
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 
 public class UserService {
@@ -78,4 +81,47 @@ public class UserService {
             statement.executeUpdate();
         }
     }
+
+    public void updateCoins(User user, Connection conn) throws SQLException {
+        String updateCoinsQuery = "UPDATE users SET coins = ? WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(updateCoinsQuery)) {
+            stmt.setInt(1, user.getCoins());
+            stmt.setObject(2, user.id);
+            stmt.executeUpdate();
+        }
+    }
+
+    public void assignCardsToUser(Package pkg, User user, Connection conn) throws SQLException {
+        String updateCardsQuery = "UPDATE cards SET user_id = ? WHERE card_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(updateCardsQuery)) {
+            for (Card card : pkg.getCards()) {
+                stmt.setObject(1, user.id);
+                stmt.setObject(2, card.getId());
+                stmt.executeUpdate();
+            }
+        }
+    }
+
+    public User getUserByToken(String token) throws SQLException {
+        String query = "SELECT id, username, password, token, name, bio, image, coins FROM users WHERE token = ?";
+        try (Connection conn = DatabaseConnector.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, token);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new User(
+                        UUID.fromString(rs.getString("id")),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("token"),
+                        rs.getString("name"),
+                        rs.getString("bio"),
+                        rs.getString("image"),
+                        rs.getInt("coins")
+                );
+            }
+        }
+        return null; // Kein Benutzer mit dem angegebenen Token gefunden
+    }
+
 }

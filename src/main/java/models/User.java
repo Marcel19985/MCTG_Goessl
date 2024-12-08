@@ -1,6 +1,10 @@
 package models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import services.UserService;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.UUID; //für UUID (primary key als UUID anstatt fortlaufend)
 
 public class User {
@@ -55,6 +59,18 @@ public class User {
         this.coins = 20;
     }
 
+    public User(UUID id, String username, String password, String token, String name, String bio, String image, int coins) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.token = token;
+        this.name = name;
+        this.bio = bio;
+        this.image = image;
+        this.coins = coins;
+        this.stack = new Stack();
+    }
+
     public String getUsername() {
         return username;
     }
@@ -85,6 +101,14 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getCoins() {
+        return coins;
+    }
+
+    public void setCoins(int coins) {
+        this.coins = coins;
     }
 
     public String getBio() {
@@ -121,16 +145,28 @@ public class User {
         System.out.println("User's Stack: " + stack);
     }
 
-    public boolean buyPackage(Package pkg) { //noch nicht in Verwendung
+    public boolean buyPackage(Package pkg, UserService userService, Connection conn) throws SQLException {
         if (coins < 5) {
-            System.out.println("Insufficient coins to buy a package.");
-            return false;
+            throw new IllegalStateException("Not enough money.");
         }
-        coins -= 5; //Package kostet 5 coins
+
+        // Reduzieren der Coins lokal
+        coins -= 5;
+
+        // Aktualisiere die Coins in der Datenbank
+        userService.updateCoins(this, conn);
+
+        // Weise die Karten dem Benutzer zu
+        userService.assignCardsToUser(pkg, this, conn);
+
+        // Karten lokal hinzufügen
         for (Card card : pkg.getCards()) {
             stack.addCard(card);
         }
+
         System.out.println("Package acquired and added to stack. Remaining coins: " + coins);
         return true;
     }
+
+
 }

@@ -84,7 +84,37 @@ public class PostRequestHandler {
         } else if ("/battles".equals(requestLine.getPath())) {
             createResponseDoesNotExist(out);
         } else if ("/transactions/packages".equals(requestLine.getPath())) {
-            createResponseDoesNotExist(out);
+            String authHeader = headers.getHeader("Authorization");
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                out.write("HTTP/1.1 401 Unauthorized\r\nContent-Type: text/plain\r\n\r\nAuthorization header missing or invalid.");
+                out.flush();
+                return;
+            }
+
+            String token = authHeader.substring("Bearer ".length());
+            PackageService packageService = new PackageService();
+
+            try {
+                // Ruf die Methode im PackageService auf
+                boolean success = packageService.acquirePackage(token);
+                if (success) {
+                    out.write("HTTP/1.1 201 Created\r\nContent-Type: text/plain\r\n\r\nPackage acquired successfully.");
+                } else {
+                    out.write("HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nFailed to acquire package.");
+                }
+                out.flush();
+            } catch (IllegalArgumentException e) {
+                out.write("HTTP/1.1 401 Unauthorized\r\nContent-Type: text/plain\r\n\r\n" + e.getMessage());
+                out.flush();
+            } catch (IllegalStateException e) {
+                out.write("HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\n" + e.getMessage());
+                out.flush();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                out.write("HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nDatabase error occurred.");
+                out.flush();
+            }
+
         } else {
             out.write("HTTP/1.1 405 Method Not Allowed\r\nContent-Type: text/plain\r\n\r\nThis HTTP method is not supported.");
             out.flush();

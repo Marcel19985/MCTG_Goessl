@@ -8,7 +8,9 @@ import models.SpellCard;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException; //kann SQL Fehler als exception ausgeben
+import java.util.UUID;
 
 public class PackageService {
 
@@ -44,6 +46,68 @@ public class PackageService {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public boolean acquirePackage(String token) throws SQLException {
+        try (Connection conn = DatabaseConnector.connect()) {
+            // Verify user and coins
+            String userQuery = "SELECT id, coins FROM users WHERE token = ?";
+            PreparedStatement userStmt = conn.prepareStatement(userQuery);
+            userStmt.setString(1, token);
+
+            ResultSet userRs = userStmt.executeQuery();
+            if (!userRs.next()) {
+                throw new IllegalArgumentException("Invalid token.");
+            }
+
+            UUID userId = UUID.fromString(userRs.getString("id"));
+            int coins = userRs.getInt("coins");
+
+            if (coins < 5) {
+                throw new IllegalStateException("Not enough coins.");
+            }
+
+            // Get the first available package
+            String packageQuery = "SELECT package_id FROM packages LIMIT 1";
+            PreparedStatement packageStmt = conn.prepareStatement(packageQuery);
+            ResultSet packageRs = packageStmt.executeQuery();
+
+            if (!packageRs.next()) {
+                throw new IllegalStateException("No packages available.");
+            }
+
+            UUID packageId = UUID.fromString(packageRs.getString("package_id"));
+
+            // Deduct coins and assign package
+            conn.setAutoCommit(false);
+
+            try {
+                // Update coins
+                String updateCoinsQuery = "UPDATE users SET coins = coins - 5 WHERE id = ?";
+                PreparedStatement updateCoinsStmt = conn.prepareStatement(updateCoinsQuery);
+                updateCoinsStmt.setObject(1, userId);
+                updateCoinsStmt.executeUpdate();
+
+                // Insert package into user_packages
+                String assignPackageQuery = "INSERT INTO user_packages (user_id, package_id) VALUES (?, ?)";
+                PreparedStatement assignPackageStmt = conn.prepareStatement(assignPackageQuery);
+                assignPackageStmt.setObject(1, userId);
+                assignPackageStmt.setObject(2, packageId);
+                assignPackageStmt.executeUpdate();
+
+                // Delete package from packages table
+                String deletePackageQuery = "DELETE FROM packages WHERE package_id = ?";
+                PreparedStatement deletePackageStmt = conn.prepareStatement(deletePackageQuery);
+                deletePackageStmt.setObject(1, packageId);
+                deletePackageStmt.executeUpdate();
+
+                conn.commit();
+                return true;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            }
         }
     }
 

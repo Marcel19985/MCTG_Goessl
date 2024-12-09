@@ -2,6 +2,7 @@ package services;
 
 import database.DatabaseConnector;
 import models.Card;
+import models.CardFactory;
 import models.User;
 import models.Package;
 
@@ -9,6 +10,8 @@ import java.sql.Connection; //für prepared statemenet object conn
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -100,6 +103,23 @@ public class UserService {
                 stmt.executeUpdate();
             }
         }
+    }
+
+    public List<Card> getCardsByUser(User user) throws SQLException {
+        String query = "SELECT card_id, name, damage FROM cards WHERE user_id = ?";
+        List<Card> cards = new ArrayList<>();
+        try (Connection conn = DatabaseConnector.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setObject(1, user.id);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                UUID cardId = UUID.fromString(rs.getString("card_id"));
+                String name = rs.getString("name");
+                double damage = rs.getDouble("damage");
+                cards.add(CardFactory.createCard(cardId, name, damage));
+            }
+        }
+        return cards;
     }
 
     public User getUserByToken(String token) throws SQLException {

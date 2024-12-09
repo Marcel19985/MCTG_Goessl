@@ -107,12 +107,22 @@ public class PackageService {
     }
 
     public void deletePackageById(UUID packageId, Connection conn) throws SQLException {
+        // Schritt 1: Setze package_id auf NULL für alle Karten des Pakets
+        String updateCardsQuery = "UPDATE cards SET package_id = NULL WHERE package_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(updateCardsQuery)) {
+            stmt.setObject(1, packageId);
+            int rowsUpdated = stmt.executeUpdate();
+            System.out.println("Cards updated to NULL: " + rowsUpdated);
+        }
+
+        // Schritt 2: Lösche das Paket
         String deletePackageQuery = "DELETE FROM packages WHERE package_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(deletePackageQuery)) {
             stmt.setObject(1, packageId);
-            int rowsAffected = stmt.executeUpdate();
-            System.out.println("Rows deleted: " + rowsAffected);
+            int rowsDeleted = stmt.executeUpdate();
+            System.out.println("Packages deleted: " + rowsDeleted);
         }
     }
+
 
 }

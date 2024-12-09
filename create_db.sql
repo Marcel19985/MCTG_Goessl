@@ -28,6 +28,6 @@ CREATE TABLE cards (
     damage DOUBLE PRECISION NOT NULL,
     type VARCHAR(50) NOT NULL,
     element_type VARCHAR(50) NOT NULL,
-    package_id UUID REFERENCES packages(package_id) ON DELETE CASCADE,
+    package_id UUID REFERENCES packages(package_id),
     user_id UUID REFERENCES users(id) -- NULL, wenn nicht zugeordnet
 );

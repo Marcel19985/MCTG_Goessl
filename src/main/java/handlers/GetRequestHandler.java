@@ -1,5 +1,6 @@
 package handlers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import models.Card;
 import models.User;
 import server.HttpHeaders;
@@ -9,13 +10,64 @@ import services.UserService;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GetRequestHandler { //Klasse hat bis jetzt noch keinen Nutzen außer Placeholder für API Endpoint
 
     public void handleGetRequest(HttpRequestLine requestLine, HttpHeaders headers, StringBuilder requestBody, BufferedWriter out) throws IOException {
-        if (requestLine.getPath().startsWith("/users")) {
-            createResponseDoesNotExist(out);
+        if (requestLine.getPath().startsWith("/users/")) { //Benutzerdaten lesen
+            String[] pathParts = requestLine.getPath().split("/");
+            if (pathParts.length != 3) {
+                out.write("HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\nInvalid URL format.");
+                out.flush();
+                return;
+            }
+
+            String username = pathParts[2];
+            String authHeader = headers.getHeader("Authorization");
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                out.write("HTTP/1.1 401 Unauthorized\r\nContent-Type: text/plain\r\n\r\nAuthorization header missing or invalid.");
+                out.flush();
+                return;
+            }
+
+            String token = authHeader.substring("Bearer ".length());
+            try {
+                UserService userService = new UserService();
+                User user = userService.getUserByToken(token);
+                if (user == null || !user.getUsername().equals(username)) {
+                    out.write("HTTP/1.1 403 Forbidden\r\nContent-Type: text/plain\r\n\r\nYou are not allowed to access this user's data.");
+                    out.flush();
+                    return;
+                }
+
+                User requestedUser = userService.getUserByUsername(username);
+                if (requestedUser == null) {
+                    out.write("HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\nUser not found.");
+                    out.flush();
+                    return;
+                }
+
+                // Nur die benötigten Felder in das JSON übernehmen
+                ObjectMapper objectMapper = new ObjectMapper();
+                Map<String, String> userData = new HashMap<>();
+                userData.put("Username", requestedUser.getUsername());
+                userData.put("Name", requestedUser.getName());
+                userData.put("Bio", requestedUser.getBio());
+                userData.put("Image", requestedUser.getImage());
+
+                String jsonResponse = objectMapper.writeValueAsString(userData);
+
+                out.write("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + jsonResponse);
+                out.flush();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                out.write("HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nDatabase error occurred.");
+                out.flush();
+            }
         } else if ("/cards".equals(requestLine.getPath())) {
             String authHeader = headers.getHeader("Authorization");
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {

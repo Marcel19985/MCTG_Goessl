@@ -212,6 +212,41 @@ public class UserService {
         }
     }
 
+    public User getUserByUsername(String username) throws SQLException {
+        String query = "SELECT id, username, name, bio, image, coins FROM users WHERE username = ?";
+        try (Connection conn = DatabaseConnector.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new User(
+                        UUID.fromString(rs.getString("id")),
+                        rs.getString("username"),
+                        null, // Passwort wird hier nicht benötigt
+                        null, // Token wird hier nicht benötigt
+                        rs.getString("name"),
+                        rs.getString("bio"),
+                        rs.getString("image"),
+                        rs.getInt("coins")
+                );
+            }
+        }
+        return null; // Benutzer nicht gefunden
+    }
+
+    public boolean updateUserData(String username, User updatedData) throws SQLException {
+        String query = "UPDATE users SET name = ?, bio = ?, image = ? WHERE username = ?";
+        try (Connection conn = DatabaseConnector.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, updatedData.getName());
+            stmt.setString(2, updatedData.getBio());
+            stmt.setString(3, updatedData.getImage());
+            stmt.setString(4, username);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        }
+    }
+
 
 
 }

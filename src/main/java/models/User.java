@@ -150,21 +150,17 @@ public class User {
             throw new IllegalStateException("Not enough money.");
         }
 
-        // Reduzieren der Coins lokal
-        coins -= 5;
+        coins -= 5; // Reduzieren der Coins lokal
 
-        // Aktualisiere die Coins in der Datenbank
-        userService.updateCoins(this, conn);
+        userService.updateCoins(this, conn); //Reduzieren Coins Datenbank
 
-        // Weise die Karten dem Benutzer zu
-        userService.assignCardsToUser(pkg, this, conn);
+        userService.assignCardsToUser(pkg, this, conn); //Weise die Karten dem Benutzer zu
 
-        // Karten lokal hinzufügen
-        for (Card card : pkg.getCards()) {
+        for (Card card : pkg.getCards()) { //Karten lokal hinzufügen
             stack.addCard(card);
         }
 
-        System.out.println("Package acquired and added to stack. Remaining coins: " + coins);
+        System.out.println("Package acquired and added to stack. Remaining coins: " + coins); //!
         return true;
     }
 

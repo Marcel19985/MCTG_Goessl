@@ -52,9 +52,9 @@ public class PackageService {
 
     public boolean acquirePackage(User user, UserService userService) throws SQLException {
         try (Connection conn = DatabaseConnector.connect()) {
-            conn.setAutoCommit(false); // Start transaction
+            conn.setAutoCommit(false); //Start transaction
 
-            // Schritt 1: Ein verfügbares Paket auswählen
+            //Schritt 1: Ein verfügbares Paket auswählen:
             String packageQuery = "SELECT package_id FROM packages LIMIT 1 FOR UPDATE";
             UUID packageId;
 
@@ -65,10 +65,10 @@ public class PackageService {
                     throw new IllegalStateException("No packages available.");
                 }
                 packageId = UUID.fromString(packageRs.getString("package_id"));
-                System.out.println("Acquired package ID: " + packageId);
+                System.out.println("Acquired package ID: " + packageId); //!
             }
 
-            // Schritt 2: Karten des Pakets abrufen
+            //Schritt 2: Karten des Pakets abrufen:
             String cardsQuery = "SELECT card_id, name, damage FROM cards WHERE package_id = ?";
             List<Card> cards = new ArrayList<>();
             try (PreparedStatement cardsStmt = conn.prepareStatement(cardsQuery)) {
@@ -83,17 +83,17 @@ public class PackageService {
                 }
             }
 
-            // Schritt 3: Paket erwerben
+            //Schritt 3: Paket erwerben:
             if (!user.buyPackage(new Package(cards), userService, conn)) {
                 conn.rollback();
                 return false;
             }
 
-            // Schritt 4: Paket löschen
+            //Schritt 4: Paket löschen:
             System.out.println("Deleting package with ID: " + packageId);
             deletePackageById(packageId, conn);
 
-            // Transaktion abschließen
+            //Transaktion abschließen:
             conn.commit();
             System.out.println("Transaction committed. Package deleted.");
             return true;
@@ -105,7 +105,6 @@ public class PackageService {
             throw e;
         }
     }
-
 
     public void deletePackageById(UUID packageId, Connection conn) throws SQLException {
         String deletePackageQuery = "DELETE FROM packages WHERE package_id = ?";

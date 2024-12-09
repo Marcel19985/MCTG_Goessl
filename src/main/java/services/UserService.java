@@ -86,7 +86,7 @@ public class UserService {
         String updateCoinsQuery = "UPDATE users SET coins = ? WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(updateCoinsQuery)) {
             stmt.setInt(1, user.getCoins());
-            stmt.setObject(2, user.id);
+            stmt.setObject(2, user.id); //!maybe getter verwenden
             stmt.executeUpdate();
         }
     }

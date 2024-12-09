@@ -94,7 +94,7 @@ public class PostRequestHandler {
             String token = authHeader.substring("Bearer ".length());
 
             try {
-                // Benutzer anhand des Tokens abrufen
+                //Benutzer anhand des Tokens abrufen:
                 UserService userService = new UserService();
                 User user = userService.getUserByToken(token);
                 if (user == null) {
@@ -103,11 +103,11 @@ public class PostRequestHandler {
                     return;
                 }
 
-                // Paket erwerben
+                //Paket erwerben:
                 PackageService packageService = new PackageService();
                 boolean success = packageService.acquirePackage(user, userService);
 
-                // Erfolgreiche Antwort
+                //Erfolgreiche Antwort:
                 if (success) {
                     out.write("HTTP/1.1 201 Created\r\nContent-Type: text/plain\r\n\r\nPackage acquired successfully.");
                 } else {
@@ -116,7 +116,7 @@ public class PostRequestHandler {
                 out.flush();
 
             } catch (IllegalStateException e) {
-                // Antwort für spezifische Fehler (z. B. zu wenig Coins)
+                //Antwort für spezifische Fehler (z. B. zu wenig Coins):
                 out.write("HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\n" + e.getMessage());
                 out.flush();
             } catch (SQLException e) {

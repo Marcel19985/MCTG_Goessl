@@ -105,18 +105,21 @@ public class UserService {
         }
     }
 
-    public List<Card> getCardsByUser(User user) throws SQLException {
-        String query = "SELECT card_id, name, damage FROM cards WHERE user_id = ?";
+    public List<Card> getUserCards(User user) throws SQLException {
+        String query = "SELECT card_id, name, damage, type, element_type FROM cards WHERE user_id = ?";
         List<Card> cards = new ArrayList<>();
+
         try (Connection conn = DatabaseConnector.connect();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setObject(1, user.id);
             ResultSet rs = stmt.executeQuery();
+
             while (rs.next()) {
                 UUID cardId = UUID.fromString(rs.getString("card_id"));
                 String name = rs.getString("name");
                 double damage = rs.getDouble("damage");
-                cards.add(CardFactory.createCard(cardId, name, damage));
+                Card card = CardFactory.createCard(cardId, name, damage);
+                cards.add(card);
             }
         }
         return cards;
@@ -143,5 +146,72 @@ public class UserService {
         }
         return null; // Kein Benutzer mit dem angegebenen Token gefunden
     }
+
+    public List<Card> getDeck(User user) throws SQLException {
+        String query = "SELECT c.card_id, c.name, c.damage, c.type, c.element_type " +
+                "FROM decks d JOIN cards c ON d.card_id = c.card_id " +
+                "WHERE d.user_id = ?";
+        List<Card> deck = new ArrayList<>();
+
+        try (Connection conn = DatabaseConnector.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setObject(1, user.id);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                UUID cardId = UUID.fromString(rs.getString("card_id"));
+                String name = rs.getString("name");
+                double damage = rs.getDouble("damage");
+                Card card = CardFactory.createCard(cardId, name, damage);
+                deck.add(card);
+            }
+        }
+        return deck;
+    }
+
+    public boolean configureDeck(User user, List<UUID> cardIds) throws SQLException {
+        if (cardIds.size() != 4) {
+            throw new IllegalArgumentException("A deck must consist of exactly 4 cards.");
+        }
+
+        try (Connection conn = DatabaseConnector.connect()) {
+            conn.setAutoCommit(false);
+
+            // Überprüfen, ob alle Karten dem Benutzer gehören
+            String cardCheckQuery = "SELECT card_id FROM cards WHERE user_id = ? AND card_id = ?";
+            try (PreparedStatement checkStmt = conn.prepareStatement(cardCheckQuery)) {
+                for (UUID cardId : cardIds) {
+                    checkStmt.setObject(1, user.id);
+                    checkStmt.setObject(2, cardId);
+                    ResultSet rs = checkStmt.executeQuery();
+                    if (!rs.next()) {
+                        throw new IllegalArgumentException("User does not own all the specified cards.");
+                    }
+                }
+            }
+
+            // Bestehendes Deck löschen
+            String deleteDeckQuery = "DELETE FROM decks WHERE user_id = ?";
+            try (PreparedStatement deleteStmt = conn.prepareStatement(deleteDeckQuery)) {
+                deleteStmt.setObject(1, user.id);
+                deleteStmt.executeUpdate();
+            }
+
+            // Neues Deck einfügen
+            String insertDeckQuery = "INSERT INTO decks (user_id, card_id) VALUES (?, ?)";
+            try (PreparedStatement insertStmt = conn.prepareStatement(insertDeckQuery)) {
+                for (UUID cardId : cardIds) {
+                    insertStmt.setObject(1, user.id);
+                    insertStmt.setObject(2, cardId);
+                    insertStmt.addBatch();
+                }
+                insertStmt.executeBatch();
+            }
+
+            conn.commit();
+            return true;
+        }
+    }
+
+
 
 }

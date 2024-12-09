@@ -67,7 +67,73 @@ public class GetRequestHandler { //Klasse hat bis jetzt noch keinen Nutzen auße
                 out.flush();
             }
         } else if (requestLine.getPath().startsWith("/deck")) {
-            createResponseDoesNotExist(out);
+            String authHeader = headers.getHeader("Authorization");
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                out.write("HTTP/1.1 401 Unauthorized\r\nContent-Type: text/plain\r\n\r\nAuthorization header missing or invalid.");
+                out.flush();
+                return;
+            }
+
+            String token = authHeader.substring("Bearer ".length());
+            try {
+                UserService userService = new UserService();
+                User user = userService.getUserByToken(token);
+                if (user == null) {
+                    out.write("HTTP/1.1 401 Unauthorized\r\nContent-Type: text/plain\r\n\r\nInvalid token.");
+                    out.flush();
+                    return;
+                }
+
+                List<Card> deck = userService.getDeck(user);
+
+                // Extrahiere Query-Parameter aus der URL
+                String[] pathParts = requestLine.getPath().split("\\?");
+                String format = "json"; // Standard: JSON
+                if (pathParts.length > 1) {
+                    String query = pathParts[1];
+                    for (String param : query.split("&")) {
+                        String[] keyValue = param.split("=");
+                        if (keyValue.length == 2 && "format".equals(keyValue[0]) && "plain".equals(keyValue[1])) {
+                            format = "plain";
+                            break;
+                        }
+                    }
+                }
+
+                if ("plain".equals(format)) {
+                    // Plain-Text-Ausgabe
+                    StringBuilder plainOutput = new StringBuilder();
+                    for (Card card : deck) {
+                        plainOutput.append(card.getName()).append(" (")
+                                .append(card.getElementType()).append(", ")
+                                .append(card.getDamage()).append(")\n");
+                    }
+                    out.write("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n" + plainOutput.toString());
+                } else {
+                    // JSON-Ausgabe
+                    StringBuilder jsonOutput = new StringBuilder("[");
+                    for (Card card : deck) {
+                        jsonOutput.append("{")
+                                .append("\"id\":\"").append(card.getId()).append("\",")
+                                .append("\"name\":\"").append(card.getName()).append("\",")
+                                .append("\"damage\":").append(card.getDamage()).append(",")
+                                .append("\"elementType\":\"").append(card.getElementType()).append("\",")
+                                .append("\"type\":\"").append(card.getCardType()).append("\"")
+                                .append("},");
+                    }
+                    if (!deck.isEmpty()) {
+                        jsonOutput.deleteCharAt(jsonOutput.length() - 1);
+                    }
+                    jsonOutput.append("]");
+                    out.write("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + jsonOutput.toString());
+                }
+                out.flush();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                out.write("HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nDatabase error occurred.");
+                out.flush();
+            }
         } else if ("/stats".equals(requestLine.getPath())) {
             createResponseDoesNotExist(out);
         } else if ("/scoreboard".equals(requestLine.getPath())) {

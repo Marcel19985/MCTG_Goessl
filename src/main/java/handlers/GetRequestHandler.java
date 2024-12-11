@@ -23,17 +23,17 @@ public class GetRequestHandler {
     public void handleGetRequest(HttpRequestLine requestLine, HttpHeaders headers, StringBuilder requestBody, BufferedWriter out) throws IOException {
 
         try {
-            if (requestLine.getPath().startsWith("/users/")) {
+            if (requestLine.getPath().startsWith("/users/")) { //gibt user data aus
                 handleUserDetails(requestLine, headers, out);
-            } else if ("/cards".equals(requestLine.getPath())) {
+            } else if ("/cards".equals(requestLine.getPath())) { //gibt acquired cards aus
                 handleUserCards(headers, out);
-            } else if (requestLine.getPath().startsWith("/deck")) {
+            } else if (requestLine.getPath().startsWith("/deck")) { //gibt deck aus
                 handleDeck(requestLine, headers, out);
-            } else if ("/stats".equals(requestLine.getPath())) {
+            } else if ("/stats".equals(requestLine.getPath())) { //gibts stats aus
                 createResponseDoesNotExist(out);
-            } else if ("/scoreboard".equals(requestLine.getPath())) {
+            } else if ("/scoreboard".equals(requestLine.getPath())) { //gibt scoreboard aus
                 createResponseDoesNotExist(out);
-            } else if ("/tradings".equals(requestLine.getPath())) {
+            } else if ("/tradings".equals(requestLine.getPath())) { //check trading deals
                 createResponseDoesNotExist(out);
             } else {
                 out.write("HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\nEndpoint not found.");
@@ -52,52 +52,47 @@ public class GetRequestHandler {
         }
     }
 
+    //gibt user data aus:
     private void handleUserDetails(HttpRequestLine requestLine, HttpHeaders headers, BufferedWriter out) throws SQLException, IOException {
         String[] pathParts = requestLine.getPath().split("/");
-        if (pathParts.length != 3) {
+        /*if (pathParts.length != 3) {
             out.write("HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\nInvalid URL format.");
             out.flush();
             return;
-        }
+        }*/
 
         String username = pathParts[2];
-        String authHeader = headers.getHeader("Authorization");
 
-        // Autorisierung durchführen
-        authorisationService.authorize(authHeader, username);
+        User requestedUser = authorisationService.authorize(headers, username); //Autorisierung: passen username und Token zusammen?
 
-        // Benutzer abrufen
-        User requestedUser = userService.getUserByUsername(username);
         if (requestedUser == null) {
             out.write("HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\nUser not found.");
             out.flush();
             return;
         }
 
-        // Nur relevante Daten zurückgeben
-        ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> userData = new HashMap<>();
+        //Map mit Werten von Userobjekt befüllen:
         userData.put("Username", requestedUser.getUsername());
         userData.put("Name", requestedUser.getName());
         userData.put("Bio", requestedUser.getBio());
         userData.put("Image", requestedUser.getImage());
 
-        String jsonResponse = objectMapper.writeValueAsString(userData);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponse = objectMapper.writeValueAsString(userData); //Map in JSON umwandeln mit ObjectMapper
 
         out.write("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + jsonResponse);
         out.flush();
     }
 
+    //gibt acquired cards aus:
     private void handleUserCards(HttpHeaders headers, BufferedWriter out) throws SQLException, IOException {
-        String authHeader = headers.getHeader("Authorization");
 
-        // Autorisierung durchführen
-        User user = authorisationService.validateToken(authHeader);
+        User user = authorisationService.validateToken(headers); //Token übergeben?
 
-        // Karten des Benutzers abrufen
-        List<Card> cards = userService.getUserCards(user);
+        List<Card> cards = userService.getUserCards(user); //Karten des Benutzers abrufen
 
-        // Karten als JSON formatieren
+        //Karten als JSON formatieren:
         StringBuilder jsonOutput = new StringBuilder("[");
         for (Card card : cards) {
             jsonOutput.append("{")
@@ -119,17 +114,15 @@ public class GetRequestHandler {
     }
 
     private void handleDeck(HttpRequestLine requestLine, HttpHeaders headers, BufferedWriter out) throws SQLException, IOException {
-        String authHeader = headers.getHeader("Authorization");
 
-        // Autorisierung durchführen
-        User user = authorisationService.validateToken(authHeader);
+        User user = authorisationService.validateToken(headers); //Token übergeben?
 
-        // Deck abrufen
-        List<Card> deck = userService.getDeck(user);
+        List<Card> deck = userService.getDeck(user); //Deck abrufen
 
         // Query-Parameter auslesen
         String[] pathParts = requestLine.getPath().split("\\?");
-        String format = "json"; // Standardformat
+        String format = "json"; //Standardformat (wenn nichts im request festgelegt)
+
         if (pathParts.length > 1) {
             String query = pathParts[1];
             for (String param : query.split("&")) {

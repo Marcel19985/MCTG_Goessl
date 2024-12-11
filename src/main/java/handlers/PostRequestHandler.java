@@ -30,39 +30,32 @@ public class PostRequestHandler {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
-            if ("/users".equals(requestLine.getPath())) {
-                // Registrierung von User
+            if ("/users".equals(requestLine.getPath())) { //Registrierung
                 handleUserRegistration(requestBody, out);
-            } else if ("/sessions".equals(requestLine.getPath())) {
-                // Login von User
+            } else if ("/sessions".equals(requestLine.getPath())) { //Login
                 handleUserLogin(requestBody, out);
-            } else if ("/packages".equals(requestLine.getPath())) {
-                // Hinzufügen eines neuen Packages
+            } else if ("/packages".equals(requestLine.getPath())) { //Add Package
                 handlePackageCreation(headers, requestBody, out);
-            } else if ("/transactions/packages".equals(requestLine.getPath())) {
-                // Paket von User erwerben
+            } else if ("/transactions/packages".equals(requestLine.getPath())) { //Acquire Package
                 handlePackageAcquisition(headers, out);
             } else if (requestLine.getPath().startsWith("/tradings")) {
-                // Noch nicht implementierte Funktionalität
                 createResponseDoesNotExist(out);
             } else if ("/battles".equals(requestLine.getPath())) {
-                // Noch nicht implementierte Funktionalität
                 createResponseDoesNotExist(out);
-            } else {
-                // Fallback für nicht unterstützte Endpoints
+            } else { //Ungültige Endpoints:
                 out.write("HTTP/1.1 405 Method Not Allowed\r\nContent-Type: text/plain\r\n\r\nThis endpoint is not supported.");
                 out.flush();
             }
         } catch (IllegalArgumentException e) {
-            // Antwort für ungültige Autorisierung
+            //Antwort für ungültige Autorisierung:
             out.write("HTTP/1.1 401 Unauthorized\r\nContent-Type: text/plain\r\n\r\n" + e.getMessage());
             out.flush();
         } catch (IllegalStateException e) {
-            // Antwort für ungültige Anfragen
+            //Antwort für ungültige Anfragen:
             out.write("HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\n" + e.getMessage());
             out.flush();
         } catch (SQLException e) {
-            // Antwort für Datenbankfehler
+            //Antwort Datenbankfehler:
             e.printStackTrace();
             out.write("HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nDatabase error occurred.");
             out.flush();
@@ -70,9 +63,8 @@ public class PostRequestHandler {
     }
 
     private void handleUserRegistration(StringBuilder requestBody, BufferedWriter out) throws IOException, SQLException {
-        // JSON-Body in ein User-Objekt umwandeln
-        User user = new ObjectMapper().readValue(requestBody.toString(), User.class);
-        boolean success = userService.registerUser(user); // User registrieren
+        User user = new ObjectMapper().readValue(requestBody.toString(), User.class); //Wandelt JSON in Java Objekt User um
+        boolean success = userService.registerUser(user); //führt registrierung durch
         if (success) {
             out.write("HTTP/1.1 201 Created\r\nContent-Type: text/plain\r\n\r\nUser registered successfully.");
         } else {
@@ -82,9 +74,8 @@ public class PostRequestHandler {
     }
 
     private void handleUserLogin(StringBuilder requestBody, BufferedWriter out) throws IOException, SQLException {
-        // JSON-Body in ein User-Objekt umwandeln
-        User user = new ObjectMapper().readValue(requestBody.toString(), User.class);
-        String token = userService.loginUser(user); // Login durchführen und Token generieren
+        User user = new ObjectMapper().readValue(requestBody.toString(), User.class); //JSON-Body in ein User-Objekt umwandeln
+        String token = userService.loginUser(user); //Login durchführen: gibt Token zurück
         if (token != null) {
             out.write("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{\"token\":\"" + token + "\"}");
         } else {
@@ -94,28 +85,28 @@ public class PostRequestHandler {
     }
 
     private void handlePackageCreation(HttpHeaders headers, StringBuilder requestBody, BufferedWriter out) throws IOException, SQLException {
-        // Admin-Berechtigung überprüfen
-        authorisationService.validateAdmin(headers);
+        authorisationService.validateAdmin(headers); //Admin-Berechtigung überprüfen
 
-        // JSON-Body in eine Liste von Karten umwandeln
+        //Liste bestehend aus Maps: Jede Card ist Map bestehend aus String (key) und Object (value)
+        //fügt die JSON Daten aus requestBody in eine Liste ein:
         List<Map<String, Object>> cardData = new ObjectMapper().readValue(
                 requestBody.toString(),
                 new TypeReference<List<Map<String, Object>>>() {}
         );
 
-        // Karten erstellen
+        //Karten erstellen:
         List<Card> cards = new ArrayList<>();
-        for (Map<String, Object> data : cardData) {
-            UUID id = UUID.fromString((String) data.get("Id"));
-            String name = (String) data.get("Name");
-            double damage = ((Number) data.get("Damage")).doubleValue();
-            Card card = CardFactory.createCard(id, name, damage);
-            cards.add(card);
+        for (Map<String, Object> data : cardData) { //geht alle Card's durch:
+            UUID id = UUID.fromString((String) data.get("Id")); //Wert aus id Feld wird als String aus Map geholt und in UUID umgewandelt
+            String name = (String) data.get("Name"); //extrahiere name
+            double damage = ((Number) data.get("Damage")).doubleValue(); //extrahiere damage und konvertiert zu double
+            Card card = CardFactory.createCard(id, name, damage); //CardFactory, um Card Object's zu erstellen: gibt Objekt der richtigen Kindklasse zurück
+            cards.add(card); //Karte zur Liste hinzufügen
         }
 
-        // Package erstellen und hinzufügen
-        models.Package pkg = new Package(cards);
-        boolean success = packageService.addPackage(pkg);
+        //Package erstellen und hinzufügen:
+        models.Package pkg = new Package(cards); //Package erstellen und Liste cards übergeben
+        boolean success = packageService.addPackage(pkg); //Package + Card's zur Datenbank hinzufügen
         if (success) {
             out.write("HTTP/1.1 201 Created\r\nContent-Type: text/plain\r\n\r\nPackage added successfully.");
         } else {
@@ -125,11 +116,10 @@ public class PostRequestHandler {
     }
 
     private void handlePackageAcquisition(HttpHeaders headers, BufferedWriter out) throws SQLException, IOException {
-        // Benutzer mit gültigem Token autorisieren
-        User user = authorisationService.validateToken(headers.getHeader("Authorization"));
 
-        // Paket erwerben
-        boolean success = packageService.acquirePackage(user, userService);
+        User user = authorisationService.validateToken(headers); //Benutzer mit Token autorisieren
+
+        boolean success = packageService.acquirePackage(user, userService); //Paket erwerben
         if (success) {
             out.write("HTTP/1.1 201 Created\r\nContent-Type: text/plain\r\n\r\nPackage acquired successfully.");
         } else {

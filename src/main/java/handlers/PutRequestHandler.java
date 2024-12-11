@@ -44,7 +44,7 @@ public class PutRequestHandler {
 
     private void handleDeckConfiguration(HttpHeaders headers, StringBuilder requestBody, BufferedWriter out) throws IOException, SQLException {
         // Benutzer mit Token validieren
-        User user = authorisationService.validateToken(headers.getHeader("Authorization"));
+        User user = authorisationService.validateToken(headers);
 
         // JSON-Body in eine Liste von Karten-IDs umwandeln
         ObjectMapper objectMapper = new ObjectMapper();

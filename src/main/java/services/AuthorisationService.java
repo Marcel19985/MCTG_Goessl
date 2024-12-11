@@ -7,12 +7,7 @@ import java.sql.SQLException;
 public class AuthorisationService {
     private final UserService userService = new UserService();
 
-    /**
-     * Validates if the authorization header contains a valid admin token.
-     *
-     //@param authHeader The Authorization header from the HTTP request.
-     * @throws IllegalArgumentException if the token is missing or invalid.
-     */
+    //Check, ob Admin Token in Request:
     public void validateAdmin(HttpHeaders headers) throws IllegalArgumentException {
         String authHeader = headers.getHeader("Authorization");
         if (authHeader == null || !authHeader.equals("Bearer admin-mtcgToken")) {
@@ -20,15 +15,7 @@ public class AuthorisationService {
         }
     }
 
-    /**
-     * Validates if the token belongs to the specified username.
-     *
-     * @param authHeader The Authorization header containing the Bearer token.
-     * @param username   The username to validate against.
-     * @return The User object if validation is successful.
-     * @throws IllegalArgumentException if the token is invalid or does not match the username.
-     * @throws SQLException             if a database error occurs.
-     */
+    //User wird abgefragt basierend auf übergebenen Token:
     public User validateUser(String authHeader, String username) throws IllegalArgumentException, SQLException {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new IllegalArgumentException("Authorization header missing or invalid.");
@@ -44,15 +31,9 @@ public class AuthorisationService {
         return user;
     }
 
-    /**
-     * Validates a user token and returns the associated User object.
-     *
-     * @param authHeader The Authorization header from the HTTP request.
-     * @return User associated with the token.
-     * @throws IllegalArgumentException if the token is missing or invalid.
-     * @throws SQLException if a database error occurs.
-     */
-    public User validateToken(String authHeader) throws SQLException {
+    //"Authorization: Bearer altenhof-mtcgToken":
+    public User validateToken(HttpHeaders headers) throws SQLException {
+        String authHeader = headers.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new IllegalArgumentException("Authorization header missing or invalid.");
         }
@@ -67,20 +48,14 @@ public class AuthorisationService {
         return user;
     }
 
-    /**
-     * Validates if the token corresponds to the specified username.
-     *
-     * @param authHeader The Authorization header from the HTTP request.
-     * @param username The username to validate against.
-     * @throws IllegalArgumentException if the user is not authorized to access this username.
-     * @throws SQLException if a database error occurs.
-     */
-    public void authorize(String authHeader, String username) throws SQLException {
-        User user = validateToken(authHeader);
+    //Stimmt übergebener username mit Token überein?:
+    public User authorize(HttpHeaders headers, String username) throws SQLException {
+        User user = validateToken(headers);
 
         if (!user.getUsername().equals(username)) {
             throw new IllegalArgumentException("You are not allowed to access this user's data.");
         }
+        return user;
     }
 
 }

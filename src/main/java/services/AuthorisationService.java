@@ -21,6 +21,30 @@ public class AuthorisationService {
     }
 
     /**
+     * Validates if the token belongs to the specified username.
+     *
+     * @param authHeader The Authorization header containing the Bearer token.
+     * @param username   The username to validate against.
+     * @return The User object if validation is successful.
+     * @throws IllegalArgumentException if the token is invalid or does not match the username.
+     * @throws SQLException             if a database error occurs.
+     */
+    public User validateUser(String authHeader, String username) throws IllegalArgumentException, SQLException {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Authorization header missing or invalid.");
+        }
+
+        String token = authHeader.substring("Bearer ".length());
+        User user = userService.getUserByToken(token);
+
+        if (user == null || !user.getUsername().equals(username)) {
+            throw new IllegalArgumentException("You are not authorized to perform this action.");
+        }
+
+        return user;
+    }
+
+    /**
      * Validates a user token and returns the associated User object.
      *
      * @param authHeader The Authorization header from the HTTP request.

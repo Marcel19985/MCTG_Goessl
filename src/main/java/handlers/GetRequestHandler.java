@@ -14,18 +14,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GetRequestHandler { //Klasse hat bis jetzt noch keinen Nutzen außer Placeholder für API Endpoint
+public class GetRequestHandler {
 
     public void handleGetRequest(HttpRequestLine requestLine, HttpHeaders headers, StringBuilder requestBody, BufferedWriter out) throws IOException {
-        if (requestLine.getPath().startsWith("/users/")) { //Benutzerdaten lesen
-            String[] pathParts = requestLine.getPath().split("/");
+
+
+        if (requestLine.getPath().startsWith("/users/")) { //Benutzerdaten ausgeben: username, name, bio, image
+            String[] pathParts = requestLine.getPath().split("/"); //Pfad wird zerlegt z. B. /users/kienboec wird zu ["", "users", "kienboec"]
             if (pathParts.length != 3) {
                 out.write("HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\nInvalid URL format.");
                 out.flush();
                 return;
             }
 
-            String username = pathParts[2];
+            String username = pathParts[2]; //username speichern
+            //Authorisierung checken:
             String authHeader = headers.getHeader("Authorization");
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 out.write("HTTP/1.1 401 Unauthorized\r\nContent-Type: text/plain\r\n\r\nAuthorization header missing or invalid.");
@@ -33,18 +36,18 @@ public class GetRequestHandler { //Klasse hat bis jetzt noch keinen Nutzen auße
                 return;
             }
 
-            String token = authHeader.substring("Bearer ".length());
+            String token = authHeader.substring("Bearer ".length()); //Token speichern
             try {
                 UserService userService = new UserService();
                 User user = userService.getUserByToken(token);
-                if (user == null || !user.getUsername().equals(username)) {
-                    out.write("HTTP/1.1 403 Forbidden\r\nContent-Type: text/plain\r\n\r\nYou are not allowed to access this user's data.");
+                if (user == null || !user.getUsername().equals(username)) { //wenn Token falsch
+                    out.write("HTTP/1.1 403 Forbidden\r\nContent-Type: text/plain\r\n\r\nYou are not allowed to access this data.");
                     out.flush();
                     return;
                 }
 
                 User requestedUser = userService.getUserByUsername(username);
-                if (requestedUser == null) {
+                if (requestedUser == null) { //Existiert angefragter user in Datenbank?
                     out.write("HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\nUser not found.");
                     out.flush();
                     return;
@@ -52,7 +55,7 @@ public class GetRequestHandler { //Klasse hat bis jetzt noch keinen Nutzen auße
 
                 // Nur die benötigten Felder in das JSON übernehmen
                 ObjectMapper objectMapper = new ObjectMapper();
-                Map<String, String> userData = new HashMap<>();
+                Map<String, String> userData = new HashMap<>(); //Hashmap = Key value pairs
                 userData.put("Username", requestedUser.getUsername());
                 userData.put("Name", requestedUser.getName());
                 userData.put("Bio", requestedUser.getBio());
@@ -68,7 +71,9 @@ public class GetRequestHandler { //Klasse hat bis jetzt noch keinen Nutzen auße
                 out.write("HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nDatabase error occurred.");
                 out.flush();
             }
-        } else if ("/cards".equals(requestLine.getPath())) {
+
+
+        } else if ("/cards".equals(requestLine.getPath())) { //gibt alle Karten eines users aus
             String authHeader = headers.getHeader("Authorization");
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 out.write("HTTP/1.1 401 Unauthorized\r\nContent-Type: text/plain\r\n\r\nAuthorization header missing or invalid.");
@@ -103,7 +108,7 @@ public class GetRequestHandler { //Klasse hat bis jetzt noch keinen Nutzen auße
                             .append("},");
                 }
 
-                // Entferne das letzte Komma und schließe das JSON-Array
+                // Entferne das letzte Komma und schließe das JSON-Array:
                 if (!cards.isEmpty()) {
                     jsonOutput.deleteCharAt(jsonOutput.length() - 1);
                 }
@@ -118,7 +123,9 @@ public class GetRequestHandler { //Klasse hat bis jetzt noch keinen Nutzen auße
                 out.write("HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nDatabase error occurred.");
                 out.flush();
             }
-        } else if (requestLine.getPath().startsWith("/deck")) {
+
+
+        } else if (requestLine.getPath().startsWith("/deck")) { //gibt Deck eines Users aus
             String authHeader = headers.getHeader("Authorization");
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 out.write("HTTP/1.1 401 Unauthorized\r\nContent-Type: text/plain\r\n\r\nAuthorization header missing or invalid.");
@@ -138,9 +145,9 @@ public class GetRequestHandler { //Klasse hat bis jetzt noch keinen Nutzen auße
 
                 List<Card> deck = userService.getDeck(user);
 
-                // Extrahiere Query-Parameter aus der URL
+                //Extrahiere Query-Parameter aus der URL:
                 String[] pathParts = requestLine.getPath().split("\\?");
-                String format = "json"; // Standard: JSON
+                String format = "json"; //Standard format: JSON (wenn nicht im Request spezifiziert)
                 if (pathParts.length > 1) {
                     String query = pathParts[1];
                     for (String param : query.split("&")) {
@@ -152,8 +159,7 @@ public class GetRequestHandler { //Klasse hat bis jetzt noch keinen Nutzen auße
                     }
                 }
 
-                if ("plain".equals(format)) {
-                    // Plain-Text-Ausgabe
+                if ("plain".equals(format)) { //Plain-Text Ausgabe
                     StringBuilder plainOutput = new StringBuilder();
                     for (Card card : deck) {
                         plainOutput.append(card.getName()).append(" (")
@@ -161,8 +167,7 @@ public class GetRequestHandler { //Klasse hat bis jetzt noch keinen Nutzen auße
                                 .append(card.getDamage()).append(")\n");
                     }
                     out.write("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n" + plainOutput.toString());
-                } else {
-                    // JSON-Ausgabe
+                } else { //JSON-Ausgabe:
                     StringBuilder jsonOutput = new StringBuilder("[");
                     for (Card card : deck) {
                         jsonOutput.append("{")

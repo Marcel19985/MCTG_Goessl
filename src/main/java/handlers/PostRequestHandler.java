@@ -78,7 +78,6 @@ public class PostRequestHandler {
             }
             out.flush();
 
-        //noch nicht implementiert:
         } else if (requestLine.getPath().startsWith("/tradings")) {
             createResponseDoesNotExist(out);
         } else if ("/battles".equals(requestLine.getPath())) {

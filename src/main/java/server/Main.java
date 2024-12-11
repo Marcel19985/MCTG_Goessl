@@ -9,7 +9,7 @@ import java.util.concurrent.Executors; //Thread Pool
 public class Main {
     public static void main(String[] args) {
 
-        ExecutorService threadPool = Executors.newFixedThreadPool(10);
+        ExecutorService threadPool = Executors.newFixedThreadPool(10); //Threadpool mit 10 Threads
 
         try (ServerSocket serverSocket = new ServerSocket(10001)) {  //erstellt ServerSocket, der auf Port 10001 hört; Klasse ServerSocket hat einen Konstruktur, der den Port 10001 (reservierter Port, sollte verfügbar sein) öffnet
             //Block wird nur ausgeführt wenn Bedingung in try true ist:

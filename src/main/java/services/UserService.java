@@ -85,7 +85,8 @@ public class UserService {
         }
     }
 
-    public void updateCoins(User user, Connection conn) throws SQLException {
+    //Connection wird übergeben weil Transaktion schon gestartet hat oder noch nicht endet
+    public void updateCoins(User user, Connection conn) throws SQLException { //davor werden in Methode bei user die Coins um 5 verringert
         String updateCoinsQuery = "UPDATE users SET coins = ? WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(updateCoinsQuery)) {
             stmt.setInt(1, user.getCoins());
@@ -105,7 +106,7 @@ public class UserService {
         }
     }
 
-    public List<Card> getUserCards(User user) throws SQLException {
+    public List<Card> getUserCards(User user) throws SQLException { //erstellt Liste an Karten, bei der Fremdschlüssel des users gespeichert ist
         String query = "SELECT card_id, name, damage, type, element_type FROM cards WHERE user_id = ?";
         List<Card> cards = new ArrayList<>();
 
@@ -129,14 +130,36 @@ public class UserService {
         String query = "SELECT id, username, password, token, name, bio, image, coins FROM users WHERE token = ?";
         try (Connection conn = DatabaseConnector.connect();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, token);
+                stmt.setString(1, token);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    return new User( //ruft Konstruktor auf
+                            UUID.fromString(rs.getString("id")),
+                            rs.getString("username"),
+                            rs.getString("password"),
+                            rs.getString("token"),
+                            rs.getString("name"),
+                            rs.getString("bio"),
+                            rs.getString("image"),
+                            rs.getInt("coins")
+                    );
+                }
+        }
+        return null; // Kein Benutzer mit dem angegebenen Token gefunden
+    }
+
+    public User getUserByUsername(String username) throws SQLException { //für Ausgabe von einem Userprofil
+        String query = "SELECT id, username, name, bio, image, coins FROM users WHERE username = ?";
+        try (Connection conn = DatabaseConnector.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return new User(
                         UUID.fromString(rs.getString("id")),
                         rs.getString("username"),
-                        rs.getString("password"),
-                        rs.getString("token"),
+                        null, //Passwort wird hier nicht benötigt
+                        null, //Token wird hier nicht benötigt
                         rs.getString("name"),
                         rs.getString("bio"),
                         rs.getString("image"),
@@ -144,7 +167,7 @@ public class UserService {
                 );
             }
         }
-        return null; // Kein Benutzer mit dem angegebenen Token gefunden
+        return null; // Benutzer nicht gefunden
     }
 
     public List<Card> getDeck(User user) throws SQLException {
@@ -212,27 +235,6 @@ public class UserService {
         }
     }
 
-    public User getUserByUsername(String username) throws SQLException {
-        String query = "SELECT id, username, name, bio, image, coins FROM users WHERE username = ?";
-        try (Connection conn = DatabaseConnector.connect();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, username);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return new User(
-                        UUID.fromString(rs.getString("id")),
-                        rs.getString("username"),
-                        null, // Passwort wird hier nicht benötigt
-                        null, // Token wird hier nicht benötigt
-                        rs.getString("name"),
-                        rs.getString("bio"),
-                        rs.getString("image"),
-                        rs.getInt("coins")
-                );
-            }
-        }
-        return null; // Benutzer nicht gefunden
-    }
 
     public boolean updateUserData(String username, User updatedData) throws SQLException {
         String query = "UPDATE users SET name = ?, bio = ?, image = ? WHERE username = ?";

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpHeaders {
-    private Map<String, String> headers = new HashMap<>(); //headers werden als HashMap gespeichert: key value pairs
+    private Map<String, String> headers = new HashMap<>(); //headers werden als Map gespeichert: key value pairs
 
     public void addHeader(String key, String value) {
         headers.put(key, value);

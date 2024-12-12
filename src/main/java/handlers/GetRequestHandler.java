@@ -113,6 +113,7 @@ public class GetRequestHandler {
         out.flush();
     }
 
+    //Deck von User abrufen:
     private void handleDeck(HttpRequestLine requestLine, HttpHeaders headers, BufferedWriter out) throws SQLException, IOException {
 
         User user = authorisationService.validateToken(headers); //Token übergeben?
@@ -120,29 +121,30 @@ public class GetRequestHandler {
         List<Card> deck = userService.getDeck(user); //Deck abrufen
 
         // Query-Parameter auslesen
-        String[] pathParts = requestLine.getPath().split("\\?");
+        String[] pathParts = requestLine.getPath().split("\\?"); //Teilt String bei "?"
         String format = "json"; //Standardformat (wenn nichts im request festgelegt)
 
-        if (pathParts.length > 1) {
-            String query = pathParts[1];
-            for (String param : query.split("&")) {
-                String[] keyValue = param.split("=");
-                if (keyValue.length == 2 && "format".equals(keyValue[0]) && "plain".equals(keyValue[1])) {
+        //sucht nach Parameter "format=plain"
+        if (pathParts.length > 1) { //Query Parameter vorhanden?
+            String query = pathParts[1]; //Url nach "?"
+            for (String param : query.split("&")) { //Parameter auslesen
+                String[] keyValue = param.split("="); //key und value aufteilen
+                if (keyValue.length == 2 && "format".equals(keyValue[0]) && "plain".equals(keyValue[1])) { //key + value && key = format && Value = Plain
                     format = "plain";
                     break;
                 }
             }
         }
 
-        if ("plain".equals(format)) {
+        if ("plain".equals(format)) { //kreiert plain response
             StringBuilder plainOutput = new StringBuilder();
-            for (Card card : deck) {
+            for (Card card : deck) { //geht Lise Deck durch
                 plainOutput.append(card.getName()).append(" (")
                         .append(card.getElementType()).append(", ")
                         .append(card.getDamage()).append(")\n");
             }
             out.write("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n" + plainOutput.toString());
-        } else {
+        } else { //kreiert JSON response
             StringBuilder jsonOutput = new StringBuilder("[");
             for (Card card : deck) {
                 jsonOutput.append("{")
@@ -153,7 +155,7 @@ public class GetRequestHandler {
                         .append("\"type\":\"").append(card.getCardType()).append("\"")
                         .append("},");
             }
-            if (!deck.isEmpty()) {
+            if (!deck.isEmpty()) { //letzten Beistrich entfernen:
                 jsonOutput.deleteCharAt(jsonOutput.length() - 1);
             }
             jsonOutput.append("]");

@@ -173,7 +173,7 @@ public class UserService {
     public List<Card> getDeck(User user) throws SQLException {
         String query = "SELECT c.card_id, c.name, c.damage, c.type, c.element_type " +
                 "FROM decks d JOIN cards c ON d.card_id = c.card_id " +
-                "WHERE d.user_id = ?";
+                "WHERE d.user_id = ?"; //JOIN -> Karten müssen im Deck und in Cards vorhanden sein
         List<Card> deck = new ArrayList<>();
 
         try (Connection conn = DatabaseConnector.connect();

@@ -54,18 +54,17 @@ public class PackageService {
         try (Connection conn = DatabaseConnector.connect()) {
             conn.setAutoCommit(false); //Start transaction
 
-            //Schritt 1: Ein verfügbares Paket auswählen:
+            //Schritt 1: verfügbares Paket auswählen:
             String packageQuery = "SELECT package_id FROM packages LIMIT 1 FOR UPDATE";
             UUID packageId;
 
             try (PreparedStatement packageStmt = conn.prepareStatement(packageQuery);
                  ResultSet packageRs = packageStmt.executeQuery()) {
 
-                if (!packageRs.next()) {
+                if (!packageRs.next()) { //Packages Tabelle leer
                     throw new IllegalStateException("No packages available.");
                 }
                 packageId = UUID.fromString(packageRs.getString("package_id"));
-                System.out.println("Acquired package ID: " + packageId); //!
             }
 
             //Schritt 2: Karten des Pakets abrufen:
@@ -74,7 +73,7 @@ public class PackageService {
             try (PreparedStatement cardsStmt = conn.prepareStatement(cardsQuery)) {
                 cardsStmt.setObject(1, packageId);
                 ResultSet rs = cardsStmt.executeQuery();
-                while (rs.next()) {
+                while (rs.next()) { //alle Karten vom Package durchgehen
                     UUID cardId = UUID.fromString(rs.getString("card_id"));
                     String name = rs.getString("name");
                     double damage = rs.getDouble("damage");
@@ -89,13 +88,9 @@ public class PackageService {
                 return false;
             }
 
-            //Schritt 4: Paket löschen:
-            System.out.println("Deleting package with ID: " + packageId);
-            deletePackageById(packageId, conn);
+            deletePackageById(packageId, conn); //Schritt 4: Paket in von Datenbank löschen
 
-            //Transaktion abschließen:
-            conn.commit();
-            System.out.println("Transaction committed. Package deleted.");
+            conn.commit(); //Transaktion abschließen
             return true;
 
         } catch (IllegalStateException e) {
@@ -107,7 +102,7 @@ public class PackageService {
     }
 
     public void deletePackageById(UUID packageId, Connection conn) throws SQLException {
-        // Schritt 1: Setze package_id auf NULL für alle Karten des Pakets
+        //Setzt package_id auf NULL für alle Karten des Pakets:
         String updateCardsQuery = "UPDATE cards SET package_id = NULL WHERE package_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(updateCardsQuery)) {
             stmt.setObject(1, packageId);
@@ -115,7 +110,7 @@ public class PackageService {
             System.out.println("Cards updated to NULL: " + rowsUpdated);
         }
 
-        // Schritt 2: Lösche das Paket
+        //Löscht das Paket:
         String deletePackageQuery = "DELETE FROM packages WHERE package_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(deletePackageQuery)) {
             stmt.setObject(1, packageId);

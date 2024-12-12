@@ -127,22 +127,16 @@ public class User {
         this.image = image;
     }
 
-    // Getter for stack
     public Stack getStack() {
         return stack;
     }
 
-    // Methods to manage cards within the user's stack
     public void addCardToStack(Card card) {
         stack.addCard(card);
     }
 
     public void removeCardFromStack(Card card) {
         stack.removeCard(card);
-    }
-
-    public void viewStack() {
-        System.out.println("User's Stack: " + stack);
     }
 
     public boolean buyPackage(Package pkg, UserService userService, Connection conn) throws SQLException {
@@ -160,9 +154,7 @@ public class User {
             stack.addCard(card);
         }
 
-        System.out.println("Package acquired and added to stack. Remaining coins: " + coins); //!
         return true;
     }
-
 
 }

@@ -38,9 +38,9 @@ public class PostRequestHandler {
                 handlePackageCreation(headers, requestBody, out);
             } else if ("/transactions/packages".equals(requestLine.getPath())) { //Acquire Package
                 handlePackageAcquisition(headers, out);
-            } else if (requestLine.getPath().startsWith("/tradings")) {
+            } else if (requestLine.getPath().startsWith("/tradings")) { //trade
                 createResponseDoesNotExist(out);
-            } else if ("/battles".equals(requestLine.getPath())) {
+            } else if ("/battles".equals(requestLine.getPath())) { //battle
                 createResponseDoesNotExist(out);
             } else { //Ungültige Endpoints:
                 out.write("HTTP/1.1 405 Method Not Allowed\r\nContent-Type: text/plain\r\n\r\nThis endpoint is not supported.");
@@ -87,7 +87,7 @@ public class PostRequestHandler {
     private void handlePackageCreation(HttpHeaders headers, StringBuilder requestBody, BufferedWriter out) throws IOException, SQLException {
         authorisationService.validateAdmin(headers); //Admin-Berechtigung überprüfen
 
-        //Liste bestehend aus Maps: Jede Card ist Map bestehend aus String (key) und Object (value)
+        //Liste bestehend aus Maps: Jede Card ist Map bestehend aus Strings (keys) und Objects (values)
         //fügt die JSON Daten aus requestBody in eine Liste ein:
         List<Map<String, Object>> cardData = new ObjectMapper().readValue(
                 requestBody.toString(),

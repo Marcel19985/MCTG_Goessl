@@ -16,7 +16,8 @@ public class AuthorisationService {
     }
 
     //User wird abgefragt basierend auf übergebenen Token:
-    public User validateUser(String authHeader, String username) throws IllegalArgumentException, SQLException {
+    public User validateUser(HttpHeaders headers, String username) throws IllegalArgumentException, SQLException {
+        String authHeader = headers.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new IllegalArgumentException("Authorization header missing or invalid.");
         }

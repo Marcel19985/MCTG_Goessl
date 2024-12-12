@@ -55,15 +55,10 @@ public class GetRequestHandler {
     //gibt user data aus:
     private void handleUserDetails(HttpRequestLine requestLine, HttpHeaders headers, BufferedWriter out) throws SQLException, IOException {
         String[] pathParts = requestLine.getPath().split("/");
-        /*if (pathParts.length != 3) {
-            out.write("HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\nInvalid URL format.");
-            out.flush();
-            return;
-        }*/
 
         String username = pathParts[2];
 
-        User requestedUser = authorisationService.authorize(headers, username); //Autorisierung: passen username und Token zusammen?
+        User requestedUser = authorisationService.validateUser(headers, username); //Autorisierung: passen username und Token zusammen?
 
         if (requestedUser == null) {
             out.write("HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\nUser not found.");

@@ -22,14 +22,11 @@ public class PutRequestHandler {
     public void handlePutRequest(HttpRequestLine requestLine, HttpHeaders headers, StringBuilder requestBody, BufferedWriter out) throws IOException {
 
         try {
-            if (requestLine.getPath().startsWith("/deck")) {
-                // Deck-Konfiguration
+            if (requestLine.getPath().startsWith("/deck")) { //configure Deck
                 handleDeckConfiguration(headers, requestBody, out);
-            } else if (requestLine.getPath().startsWith("/users/")) {
-                // Benutzer-Daten aktualisieren
+            } else if (requestLine.getPath().startsWith("/users/")) { //Benutzer-Daten aktualisieren
                 handleUserUpdate(requestLine, headers, requestBody, out);
             } else {
-                // Nicht implementierter Endpunkt
                 createResponseDoesNotExist(out);
             }
         } catch (IllegalArgumentException e) {
@@ -43,22 +40,20 @@ public class PutRequestHandler {
     }
 
     private void handleDeckConfiguration(HttpHeaders headers, StringBuilder requestBody, BufferedWriter out) throws IOException, SQLException {
-        // Benutzer mit Token validieren
-        User user = authorisationService.validateToken(headers);
+        User user = authorisationService.validateToken(headers); //Token validieren und User Objekt zurück geben
 
-        // JSON-Body in eine Liste von Karten-IDs umwandeln
+        //JSON-Body in eine Liste von Karten-IDs umwandeln:
         ObjectMapper objectMapper = new ObjectMapper();
         List<UUID> cardIds = objectMapper.readValue(requestBody.toString(), new TypeReference<List<UUID>>() {});
 
-        if (cardIds.size() != 4) {
-            throw new IllegalArgumentException("Deck must consist of exactly 4 cards.");
+        if (userService.configureDeck(user, cardIds)) {
+            out.write("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nDeck configured successfully.");
+        } else {
+            out.write("HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nFailed to configure deck.");
         }
-
-        // Deck konfigurieren
-        userService.configureDeck(user, cardIds);
-        out.write("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nDeck configured successfully.");
         out.flush();
     }
+
 
     private void handleUserUpdate(HttpRequestLine requestLine, HttpHeaders headers, StringBuilder requestBody, BufferedWriter out) throws IOException, SQLException {
         // Pfad aufteilen und Benutzername extrahieren
@@ -69,7 +64,7 @@ public class PutRequestHandler {
         String username = pathParts[2];
 
         // Berechtigung prüfen
-        User user = authorisationService.validateUser(headers.getHeader("Authorization"), username);
+        User user = authorisationService.validateUser(headers, username);
 
         // JSON-Body in aktualisierte Benutzerdaten umwandeln
         ObjectMapper objectMapper = new ObjectMapper();

@@ -30,11 +30,13 @@ public class User {
 
     private Stack stack;
     private int coins;
+    private Deck deck;
 
     // Default Konstruktor:
     public User() {
         this.stack = new Stack();
         this.coins = 20;
+        this.deck = new Deck();
     }
 
     //Konstruktor überladen:
@@ -44,18 +46,7 @@ public class User {
         this.password = password;
         this.token = token;
         this.stack = new Stack();
-        this.coins = 20;
-    }
-
-    public User(UUID id, String username, String password, String token, String name, String bio, String image) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.token = token;
-        this.name = name;
-        this.bio = bio;
-        this.image = image;
-        this.stack = new Stack();
+        this.deck = new Deck();
         this.coins = 20;
     }
 
@@ -69,6 +60,7 @@ public class User {
         this.image = image;
         this.coins = coins;
         this.stack = new Stack();
+        this.deck = new Deck();
     }
 
     public String getUsername() {
@@ -137,6 +129,14 @@ public class User {
 
     public void removeCardFromStack(Card card) {
         stack.removeCard(card);
+    }
+
+    public Deck getDeck() {
+        return deck;
+    }
+
+    public void setDeck(Deck deck) {
+        this.deck = deck;
     }
 
     public boolean buyPackage(Package pkg, UserService userService, Connection conn) throws SQLException {

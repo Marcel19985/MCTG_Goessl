@@ -64,7 +64,7 @@ public class UserService {
         return null;  //Login fehlgeschlagen
     }
 
-    //Überprüfung, ob Token zu einem User gehört: wird vermutlich nicht in dieser Art verwendet werden!
+    //Überprüfung, ob Token zu einem User gehört: wird vermutlich nicht in dieser Art verwendet werden
     public boolean validateToken(String username, String token) throws SQLException {
         try (Connection conn = DatabaseConnector.connect()) {
             String query = "SELECT 1 FROM users WHERE username = ? AND token = ?";
@@ -199,27 +199,36 @@ public class UserService {
         try (Connection conn = DatabaseConnector.connect()) {
             conn.setAutoCommit(false);
 
-            // Überprüfen, ob alle Karten dem Benutzer gehören
-            String cardCheckQuery = "SELECT card_id FROM cards WHERE user_id = ? AND card_id = ?";
+            //Überprüfen, ob alle Karten dem Benutzer gehören:
+            String cardCheckQuery = "SELECT card_id, name, damage, type, element_type FROM cards WHERE user_id = ? AND card_id = ?";
+            List<Card> newDeckCards = new ArrayList<>();
+
             try (PreparedStatement checkStmt = conn.prepareStatement(cardCheckQuery)) {
                 for (UUID cardId : cardIds) {
                     checkStmt.setObject(1, user.id);
                     checkStmt.setObject(2, cardId);
                     ResultSet rs = checkStmt.executeQuery();
-                    if (!rs.next()) {
+                    if (rs.next()) {
+                        Card card = CardFactory.createCard(
+                                UUID.fromString(rs.getString("card_id")),
+                                rs.getString("name"),
+                                rs.getDouble("damage")
+                        );
+                        newDeckCards.add(card);
+                    } else {
                         throw new IllegalArgumentException("User does not own all the specified cards.");
                     }
                 }
             }
 
-            // Bestehendes Deck löschen
+            //Bestehendes Deck löschen:
             String deleteDeckQuery = "DELETE FROM decks WHERE user_id = ?";
             try (PreparedStatement deleteStmt = conn.prepareStatement(deleteDeckQuery)) {
                 deleteStmt.setObject(1, user.id);
                 deleteStmt.executeUpdate();
             }
 
-            // Neues Deck einfügen
+            //Neues Deck einfügen:
             String insertDeckQuery = "INSERT INTO decks (user_id, card_id) VALUES (?, ?)";
             try (PreparedStatement insertStmt = conn.prepareStatement(insertDeckQuery)) {
                 for (UUID cardId : cardIds) {
@@ -231,6 +240,7 @@ public class UserService {
             }
 
             conn.commit();
+            user.getDeck().setCards(newDeckCards);
             return true;
         }
     }

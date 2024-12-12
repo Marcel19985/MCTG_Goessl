@@ -107,7 +107,6 @@ public class PackageService {
         try (PreparedStatement stmt = conn.prepareStatement(updateCardsQuery)) {
             stmt.setObject(1, packageId);
             int rowsUpdated = stmt.executeUpdate();
-            System.out.println("Cards updated to NULL: " + rowsUpdated);
         }
 
         //Löscht das Paket:
@@ -115,7 +114,6 @@ public class PackageService {
         try (PreparedStatement stmt = conn.prepareStatement(deletePackageQuery)) {
             stmt.setObject(1, packageId);
             int rowsDeleted = stmt.executeUpdate();
-            System.out.println("Packages deleted: " + rowsDeleted);
         }
     }
 

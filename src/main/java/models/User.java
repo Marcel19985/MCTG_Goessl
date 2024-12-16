@@ -5,7 +5,11 @@ import services.UserService;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID; //für UUID (primary key als UUID anstatt fortlaufend)
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class User {
     public UUID id;
@@ -155,6 +159,17 @@ public class User {
         }
 
         return true;
+    }
+
+    public String toJson() throws JsonProcessingException {
+        Map<String, String> userData = new HashMap<>();
+        userData.put("Username", this.username);
+        userData.put("Name", this.name);
+        userData.put("Bio", this.bio);
+        userData.put("Image", this.image);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(userData); // Map in JSON umwandeln
     }
 
 }

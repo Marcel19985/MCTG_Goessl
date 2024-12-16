@@ -60,21 +60,13 @@ public class GetRequestHandler {
 
         User requestedUser = authorisationService.validateUser(headers, username); //Autorisierung: passen username und Token zusammen?
 
-        if (requestedUser == null) {
+        /*if (requestedUser == null) { //brauche ich das?
             out.write("HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\nUser not found.");
             out.flush();
             return;
-        }
+        }*/
 
-        Map<String, String> userData = new HashMap<>();
-        //Map mit Werten von Userobjekt befüllen: besser direkt beim User eine Methode?
-        userData.put("Username", requestedUser.getUsername());
-        userData.put("Name", requestedUser.getName());
-        userData.put("Bio", requestedUser.getBio());
-        userData.put("Image", requestedUser.getImage());
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String jsonResponse = objectMapper.writeValueAsString(userData); //Map in JSON umwandeln mit ObjectMapper
+        String jsonResponse = requestedUser.toJson();
 
         out.write("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + jsonResponse);
         out.flush();

@@ -44,7 +44,7 @@ public class PutRequestHandler {
 
         //JSON-Body in eine Liste von Karten-IDs umwandeln:
         ObjectMapper objectMapper = new ObjectMapper();
-        List<UUID> cardIds = objectMapper.readValue(requestBody.toString(), new TypeReference<List<UUID>>() {});
+        List<UUID> cardIds = objectMapper.readValue(requestBody.toString(), new TypeReference<List<UUID>>() {}); //Liste an Karten ID's
 
         if (userService.configureDeck(user, cardIds)) {
             out.write("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nDeck configured successfully.");
@@ -63,10 +63,9 @@ public class PutRequestHandler {
         }
         String username = pathParts[2];
 
-        // Berechtigung prüfen
-        User user = authorisationService.validateUser(headers, username);
+        User user = authorisationService.validateUser(headers, username); //Berechtigung prüfen
 
-        // JSON-Body in aktualisierte Benutzerdaten umwandeln
+        //JSON-Body in aktualisierte Benutzerdaten umwandeln
         ObjectMapper objectMapper = new ObjectMapper();
         User updatedData = objectMapper.readValue(requestBody.toString(), User.class);
 

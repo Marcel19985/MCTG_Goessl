@@ -8,9 +8,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/handlers/GetRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/handlers/GetRequestHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/handlers/PutRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/handlers/PutRequestHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/AuthorisationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/AuthorisationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/PackageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/PackageService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/services/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -89,7 +86,7 @@
       <recent name="models" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.java in MCTG_Goessl">
     <configuration name="UserTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="MCTG_Goessl" />
       <extension name="coverage">
@@ -184,7 +181,7 @@
       <workItem from="1733668081739" duration="6464000" />
       <workItem from="1733745658060" duration="21707000" />
       <workItem from="1733935813277" duration="3089000" />
-      <workItem from="1733997701974" duration="8141000" />
+      <workItem from="1733997701974" duration="15127000" />
     </task>
     <servers />
   </component>

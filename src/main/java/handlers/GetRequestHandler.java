@@ -56,7 +56,7 @@ public class GetRequestHandler {
     private void handleUserDetails(HttpRequestLine requestLine, HttpHeaders headers, BufferedWriter out) throws SQLException, IOException {
         String[] pathParts = requestLine.getPath().split("/");
 
-        String username = pathParts[2];
+        String username = pathParts[2]; //holt username aus Request
 
         User requestedUser = authorisationService.validateUser(headers, username); //Autorisierung: passen username und Token zusammen?
 
@@ -67,7 +67,7 @@ public class GetRequestHandler {
         }
 
         Map<String, String> userData = new HashMap<>();
-        //Map mit Werten von Userobjekt befüllen:
+        //Map mit Werten von Userobjekt befüllen: besser direkt beim User eine Methode?
         userData.put("Username", requestedUser.getUsername());
         userData.put("Name", requestedUser.getName());
         userData.put("Bio", requestedUser.getBio());
@@ -89,7 +89,7 @@ public class GetRequestHandler {
 
         //Karten als JSON formatieren:
         StringBuilder jsonOutput = new StringBuilder("[");
-        for (Card card : cards) {
+        for (Card card : cards) { //in Card Klasse auslagern?
             jsonOutput.append("{")
                     .append("\"id\":\"").append(card.getId()).append("\",")
                     .append("\"name\":\"").append(card.getName()).append("\",")
@@ -141,7 +141,7 @@ public class GetRequestHandler {
             out.write("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n" + plainOutput.toString());
         } else { //kreiert JSON response
             StringBuilder jsonOutput = new StringBuilder("[");
-            for (Card card : deck) {
+            for (Card card : deck) { //in Deck auslagern?
                 jsonOutput.append("{")
                         .append("\"id\":\"").append(card.getId()).append("\",")
                         .append("\"name\":\"").append(card.getName()).append("\",")

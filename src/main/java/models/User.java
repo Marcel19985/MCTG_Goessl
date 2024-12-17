@@ -15,22 +15,22 @@ public class User {
     private UUID id;
 
     @JsonProperty("Username") //"Username" im JSON-Body wird username
-    public String username;
+    private String username;
 
     @JsonProperty("Password") //"Password" im JSON-Body wird password
-    public String password;
+    private String password;
 
     @JsonProperty("Token") //"Token" im JSON-Body wird token
-    public String token;
+    private String token;
 
     @JsonProperty("Name")
-    public String name;
+    private String name;
 
     @JsonProperty("Bio")
-    public String bio;
+    private String bio;
 
     @JsonProperty("Image")
-    public String image;
+    private String image;
 
     private Stack stack;
     private int coins;

@@ -90,7 +90,7 @@ public class UserService {
         String updateCoinsQuery = "UPDATE users SET coins = ? WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(updateCoinsQuery)) {
             stmt.setInt(1, user.getCoins());
-            stmt.setObject(2, user.id); //!maybe getter verwenden
+            stmt.setObject(2, user.getId()); //!maybe getter verwenden
             stmt.executeUpdate();
         }
     }
@@ -99,7 +99,7 @@ public class UserService {
         String updateCardsQuery = "UPDATE cards SET user_id = ? WHERE card_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(updateCardsQuery)) {
             for (Card card : pkg.getCards()) {
-                stmt.setObject(1, user.id);
+                stmt.setObject(1, user.getId());
                 stmt.setObject(2, card.getId());
                 stmt.executeUpdate();
             }
@@ -112,7 +112,7 @@ public class UserService {
 
         try (Connection conn = DatabaseConnector.connect();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setObject(1, user.id);
+            stmt.setObject(1, user.getId());
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -178,7 +178,7 @@ public class UserService {
 
         try (Connection conn = DatabaseConnector.connect();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setObject(1, user.id);
+            stmt.setObject(1, user.getId());
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 UUID cardId = UUID.fromString(rs.getString("card_id"));
@@ -205,7 +205,7 @@ public class UserService {
 
             try (PreparedStatement checkStmt = conn.prepareStatement(cardCheckQuery)) {
                 for (UUID cardId : cardIds) {
-                    checkStmt.setObject(1, user.id);
+                    checkStmt.setObject(1, user.getId());
                     checkStmt.setObject(2, cardId);
                     ResultSet rs = checkStmt.executeQuery();
                     if (rs.next()) {
@@ -224,7 +224,7 @@ public class UserService {
             //Bestehendes Deck löschen:
             String deleteDeckQuery = "DELETE FROM decks WHERE user_id = ?";
             try (PreparedStatement deleteStmt = conn.prepareStatement(deleteDeckQuery)) {
-                deleteStmt.setObject(1, user.id);
+                deleteStmt.setObject(1, user.getId());
                 deleteStmt.executeUpdate();
             }
 
@@ -232,7 +232,7 @@ public class UserService {
             String insertDeckQuery = "INSERT INTO decks (user_id, card_id) VALUES (?, ?)";
             try (PreparedStatement insertStmt = conn.prepareStatement(insertDeckQuery)) {
                 for (UUID cardId : cardIds) {
-                    insertStmt.setObject(1, user.id);
+                    insertStmt.setObject(1, user.getId());
                     insertStmt.setObject(2, cardId);
                     insertStmt.addBatch();
                 }

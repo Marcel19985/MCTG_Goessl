@@ -1,10 +1,14 @@
 package models;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import services.UserService;
 
+import static org.mockito.Mockito.*;
+
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,14 +42,38 @@ public class UserTest {
     }
 
     @Test
-    public void testValidateToken() throws SQLException {
-        final UserService userService = new UserService();
-        System.out.println(user.getUsername());
-        System.out.println(user.getToken());
-        try {
-            assertFalse(userService.validateToken("lalala123", "lalala123"));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public void testToJson() throws Exception {
+        user.setName("Test Name");
+        user.setBio("Test Bio");
+        user.setImage("Test Image");
+
+        String expectedJson = "{\"Username\":\"testUser\",\"Bio\":\"Test Bio\",\"Image\":\"Test Image\",\"Name\":\"Test Name\"}";
+        assertEquals(expectedJson, user.toJson());
+    }
+
+    @Test
+    public void testBuyPackage() throws SQLException {
+        UserService mockService = mock(UserService.class);
+
+        Package testPackage = new Package(List.of(
+                CardFactory.createCard(UUID.randomUUID(), "FireGoblin", 10.0),
+                CardFactory.createCard(UUID.randomUUID(), "WaterSpell", 15.0),
+                CardFactory.createCard(UUID.randomUUID(), "NormalKnight", 20.0),
+                CardFactory.createCard(UUID.randomUUID(), "FireSpell", 25.0),
+                CardFactory.createCard(UUID.randomUUID(), "WaterGoblin", 30.0)
+        ));
+
+        //Coins vor dem Kauf:
+        assertEquals(20, user.getCoins());
+
+        user.buyPackage(testPackage, mockService, null);
+
+        //Prüfe, ob die Coins reduziert wurden:
+        assertEquals(15, user.getCoins());
+    }
+
+    @AfterEach
+    public void tearDown() {
+        user = null;
     }
 }

@@ -1,9 +1,9 @@
-package models;
+package services;
 
+import models.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import services.UserService;
 
 import java.sql.SQLException;
 

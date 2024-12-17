@@ -169,7 +169,7 @@ public class User {
         userData.put("Image", this.image);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(userData); // Map in JSON umwandeln
+        return objectMapper.writeValueAsString(userData); //Map in JSON umwandeln
     }
 
 }

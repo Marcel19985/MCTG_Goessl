@@ -59,6 +59,30 @@ class CardTest {
         assertEquals(Card.ElementType.NORMAL, card.getElementType());
     }
 
+    @Test
+    void testFactoryCreatesMonsterCard() {
+        UUID id = UUID.randomUUID();
+        String name = "FireMonster";
+        double damage = 25.0;
+
+        Card card = CardFactory.createCard(id, name, damage);
+
+        assertTrue(card instanceof MonsterCard);
+        assertEquals("Monster", card.getCardType());
+    }
+
+    @Test
+    void testFactoryCreatesSpellCard() {
+        UUID id = UUID.randomUUID();
+        String name = "WaterSpell";
+        double damage = 15.0;
+
+        Card card = CardFactory.createCard(id, name, damage);
+
+        assertTrue(card instanceof SpellCard);
+        assertEquals("Spell", card.getCardType());
+    }
+
     @AfterEach
     void tearDown() {
     }

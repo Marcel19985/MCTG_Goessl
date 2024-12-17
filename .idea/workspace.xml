@@ -6,11 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="8baed113-4de9-4350-9dee-fb253f253015" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/models/CardTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/models/CardTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/models/UserServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/services/UserServiceTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/models/UserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/models/UserTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/models/PackageTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/models/PackageTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/services/UserServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/services/UserServiceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +42,7 @@
   "keyToString": {
     "Application.Main.executor": "Run",
     "JUnit.CardTest.executor": "Run",
+    "JUnit.DeckTest.executor": "Run",
     "JUnit.PackageTest.executor": "Run",
     "JUnit.UserServiceTest.executor": "Run",
     "JUnit.UserTest.executor": "Run",
@@ -89,7 +87,7 @@
       <recent name="models" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.models in MCTG_Goessl">
     <configuration name="UserTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="MCTG_Goessl" />
       <extension name="coverage">
@@ -136,8 +134,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.java in MCTG_Goessl" />
         <item itemvalue="JUnit.models in MCTG_Goessl" />
+        <item itemvalue="JUnit.java in MCTG_Goessl" />
         <item itemvalue="JUnit.UserTest" />
       </list>
     </recent_temporary>
@@ -186,7 +184,7 @@
       <workItem from="1733935813277" duration="3089000" />
       <workItem from="1733997701974" duration="15127000" />
       <workItem from="1734374135923" duration="737000" />
-      <workItem from="1734461566886" duration="3171000" />
+      <workItem from="1734461566886" duration="5544000" />
     </task>
     <servers />
   </component>

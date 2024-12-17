@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8baed113-4de9-4350-9dee-fb253f253015" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/models/PackageTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/models/PackageTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/services/UserServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/services/UserServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/Package.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Package.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,6 +17,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JUnit5 Test Class" />
+        <option value="Kotlin Class" />
         <option value="Class" />
       </list>
     </option>
@@ -43,7 +43,10 @@
     "Application.Main.executor": "Run",
     "JUnit.CardTest.executor": "Run",
     "JUnit.DeckTest.executor": "Run",
+    "JUnit.HttpHeadersTest.executor": "Run",
+    "JUnit.HttpRequestLineTest.executor": "Run",
     "JUnit.PackageTest.executor": "Run",
+    "JUnit.StackTest.executor": "Run",
     "JUnit.UserServiceTest.executor": "Run",
     "JUnit.UserTest.executor": "Run",
     "JUnit.java in MCTG_Goessl.executor": "Run",
@@ -87,7 +90,7 @@
       <recent name="models" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.models in MCTG_Goessl">
+  <component name="RunManager">
     <configuration name="UserTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="MCTG_Goessl" />
       <extension name="coverage">
@@ -184,7 +187,7 @@
       <workItem from="1733935813277" duration="3089000" />
       <workItem from="1733997701974" duration="15127000" />
       <workItem from="1734374135923" duration="737000" />
-      <workItem from="1734461566886" duration="5544000" />
+      <workItem from="1734461566886" duration="7122000" />
     </task>
     <servers />
   </component>

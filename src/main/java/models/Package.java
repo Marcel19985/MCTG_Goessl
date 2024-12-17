@@ -16,12 +16,10 @@ public class Package {
         this.cards = new ArrayList<>(cards);
     }
 
-    // Getter for the package ID
     public UUID getId() {
         return id;
     }
 
-    // Getter for the list of cards
     public List<Card> getCards() {
         return cards;
     }

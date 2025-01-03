@@ -1,4 +1,5 @@
 package models;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -12,7 +13,7 @@ public class Deck {
 
     public void setCards(List<Card> cards) {
         if (cards.size() != 4) {
-            throw new IllegalArgumentException("A deck must consist of exactly 4 cards.");
+            throw new IllegalArgumentException("A deck must consist of exactly1 4 cards.");
         }
         this.cards.clear();
         this.cards.addAll(cards);
@@ -24,6 +25,10 @@ public class Deck {
 
     public void clear() {
         this.cards.clear();
+    }
+
+    public void addCard(Card card) {
+        this.cards.add(card);
     }
 
     public boolean containsCard(UUID cardId) {

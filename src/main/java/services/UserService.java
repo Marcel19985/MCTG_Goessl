@@ -130,20 +130,30 @@ public class UserService {
         String query = "SELECT id, username, password, token, name, bio, image, coins FROM users WHERE token = ?";
         try (Connection conn = DatabaseConnector.connect();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setString(1, token);
-                ResultSet rs = stmt.executeQuery();
-                if (rs.next()) {
-                    return new User( //ruft Konstruktor auf
-                            UUID.fromString(rs.getString("id")),
-                            rs.getString("username"),
-                            rs.getString("password"),
-                            rs.getString("token"),
-                            rs.getString("name"),
-                            rs.getString("bio"),
-                            rs.getString("image"),
-                            rs.getInt("coins")
-                    );
+            stmt.setString(1, token);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                User user = new User(
+                        UUID.fromString(rs.getString("id")),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("token"),
+                        rs.getString("name"),
+                        rs.getString("bio"),
+                        rs.getString("image"),
+                        rs.getInt("coins")
+                );
+
+                // Lade das Deck des Benutzers
+                List<Card> deckCards = getDeck(user);
+                if (!deckCards.isEmpty()) {
+                    user.getDeck().setCards(deckCards);
+                } else {
+                    System.out.println("Deck ist leer für Benutzer: " + user.getUsername());
                 }
+
+                return user;
+            }
         }
         return null; // Kein Benutzer mit dem angegebenen Token gefunden
     }
@@ -193,7 +203,7 @@ public class UserService {
 
     public boolean configureDeck(User user, List<UUID> cardIds) throws SQLException {
         if (cardIds.size() != 4) {
-            throw new IllegalArgumentException("A deck must consist of exactly 4 cards.");
+            throw new IllegalArgumentException("A deck must consist of exactly2 4 cards.");
         }
 
         try (Connection conn = DatabaseConnector.connect()) {

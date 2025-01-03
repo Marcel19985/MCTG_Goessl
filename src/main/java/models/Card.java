@@ -5,7 +5,7 @@ import java.util.UUID; //für UUID (keine fortlaufenden Nummern als Primärschl�
 public abstract class Card {
     protected final UUID id;
     protected final String name;
-    protected final double damage;
+    protected double damage;
     protected final ElementType elementType;
 
     public enum ElementType {
@@ -34,6 +34,10 @@ public abstract class Card {
 
     public ElementType getElementType() {
         return elementType;
+    }
+
+    public void setDamage(double damage) {
+        this.damage = damage;
     }
 
     public abstract String getCardType();

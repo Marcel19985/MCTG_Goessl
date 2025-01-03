@@ -36,7 +36,7 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();  //bei Exception wird Fehler ausgegeben
         } finally {
-            threadPool.shutdown(); // Schließt den Thread Pool beim Beenden des Programms
+            threadPool.shutdown(); //Schließt den Thread Pool beim Beenden des Programms
         }
     }
 }

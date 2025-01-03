@@ -6,6 +6,7 @@ import models.User;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Random;
 
 public class BattleService {
     private static final int MAX_ROUNDS = 100;
@@ -42,6 +43,8 @@ public class BattleService {
         }
 
         int rounds = 0;
+        int winStreak1 = 0; //Special feature
+        int winStreak2 = 0;
         while (rounds < MAX_ROUNDS && !deck1.getCards().isEmpty() && !deck2.getCards().isEmpty()) {
             rounds++;
             battleLog.add("Round " + rounds + ":");
@@ -53,24 +56,43 @@ public class BattleService {
             battleLog.add(player1.getUsername() + " plays " + card1.getName());
             battleLog.add(player2.getUsername() + " plays " + card2.getName());
 
+            if (winStreak1 > 2 || winStreak2 > 2) {//Spezialrunde
+                Random random = new Random();
+                int randomNumber = random.nextInt(3) + 1;
+                if (winStreak1 > winStreak2) {
+                    battleLog.add(player1.getUsername() + " has a win streak of " + winStreak1 + ". Damage of current card is enhanced by factor " + randomNumber);
+                    card1.setDamage(card1.getDamage()*randomNumber);
+                }
+                else {
+                    battleLog.add(player2.getUsername() + " has a win streak of " + winStreak2 + ". Damage of current card is enhanced by factor " + randomNumber);
+                    card2.setDamage(card2.getDamage()*randomNumber);
+                }
+            }
+
             //Gewinner ermitteln:
             Card winner = determineWinner(card1, card2);
             if (winner == null) {
                 battleLog.add("It's a tie!");
+                deck2.getCards().remove(card2); //Additional feature 1: bei Unentschieden verlieren beide Spieler die Karten
+                deck1.getCards().remove(card1);
             } else if (winner == card1) { //Gewinner der Runde bekommt Karte aus Gegner-Deck:
                 battleLog.add(player1.getUsername() + " wins the round!");
                 deck2.getCards().remove(card2);
                 deck1.addCard(card2);
+                winStreak1++;
+                winStreak2 = 0;
             } else {
                 battleLog.add(player2.getUsername() + " wins the round!");
                 deck1.getCards().remove(card1);
                 deck2.addCard(card1);
+                winStreak2++;
+                winStreak1 = 0;
             }
             System.out.println("Player 1 deck: " + player1.getDeck()); //!
             System.out.println("Player 2 deck: " + player2.getDeck()); //!
         }
 
-        // Spielergebnisse
+        //Spielergebnisse:
         if (deck1.getCards().isEmpty()) {
             battleLog.add(player2.getUsername() + " wins the battle!");
         } else if (deck2.getCards().isEmpty()) {
@@ -88,6 +110,7 @@ public class BattleService {
     }
 
     private Card determineWinner(Card card1, Card card2) {
+
         //Logs für Debug:
         System.out.println("Determining winner between " + card1.getName() + " and " + card2.getName());
 

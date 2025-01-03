@@ -137,7 +137,6 @@ public class PostRequestHandler {
     }
 
     private void handleBattle(HttpHeaders headers, BufferedWriter out) throws SQLException, IOException {
-        // Überprüfe und validiere den Benutzer basierend auf dem Token
         User player = authorisationService.validateToken(headers);
 
         // Hinzufügen des Spielers zur BattleQueue
@@ -147,11 +146,11 @@ public class PostRequestHandler {
                 battleService.addToBattleQueue(player);
                 out.write("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nYou are waiting for an opponent.");
             } else {
-                // Spieler aus der Queue wird entfernt und Battle gestartet
+                //Spieler aus der Queue wird entfernt und Battle gestartet
                 User opponent = battleService.removeFromBattleQueue();
                 List<String> battleLog = battleService.startBattle(player, opponent);
 
-                // Log als JSON zurückgeben
+                //Log als JSON zurückgeben:
                 String response = new ObjectMapper().writeValueAsString(battleLog);
                 out.write("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + response);
             }

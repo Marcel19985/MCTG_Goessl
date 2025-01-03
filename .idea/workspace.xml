@@ -6,10 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="8baed113-4de9-4350-9dee-fb253f253015" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Command1-14.curl.bat" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/handlers/PostRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/handlers/PostRequestHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Deck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Deck.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/services/AuthorisationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/AuthorisationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/services/BattleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/BattleService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/services/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -196,7 +195,7 @@
       <workItem from="1734519503069" duration="804000" />
       <workItem from="1735758301332" duration="1197000" />
       <workItem from="1735841747677" duration="9231000" />
-      <workItem from="1735913763258" duration="4346000" />
+      <workItem from="1735913763258" duration="9154000" />
     </task>
     <servers />
   </component>

@@ -45,8 +45,6 @@ public class AuthorisationService {
         if (user == null) {
             throw new IllegalArgumentException("Invalid token.");
         }
-
-        System.out.println("User " + user.getUsername() + " has a deck: " + user.getDeck()); //!
         return user;
     }
 

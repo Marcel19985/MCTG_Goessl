@@ -9,25 +9,26 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class BattleService {
     private static final int MAX_ROUNDS = 100;
-    private final List<String> battleLog = new ArrayList<>();
+    private final List<String> battleLog = new ArrayList<>(); //BattleLog wird in Liste gespeichert, bevor es ausgegeben wird
 
-    private static final Queue<User> battleQueue = new ConcurrentLinkedQueue<>();
+    private static final Queue<User> battleQueue = new ConcurrentLinkedQueue<>(); // Warteschlange für Spieler, der auf einen Gegner wartet
 
-    public static Queue<User> getBattleQueue() {
+    public static Queue<User> getBattleQueue() { //get Warteschlange
         return battleQueue;
     }
 
-    public static void addToBattleQueue(User user) {
+    public static void addToBattleQueue(User user) { //Spieler in Queue einfügen
         battleQueue.add(user);
         System.out.println("User added to queue: " + user.getUsername());
     }
 
-    public static User removeFromBattleQueue() {
+    public static User removeFromBattleQueue() { //entfernt ersten Spieler aus Queue
         User user = battleQueue.poll();
         System.out.println("User removed from queue: " + (user != null ? user.getUsername() : "None"));
         return user;
     }
 
+    //Battle Logik:
     public List<String> startBattle(User player1, User player2) {
         System.out.println("Starting battle between " + player1.getUsername() + " and " + player2.getUsername());
         System.out.println("Player 1 deck: " + player1.getDeck());
@@ -36,7 +37,7 @@ public class BattleService {
         Deck deck1 = player1.getDeck();
         Deck deck2 = player2.getDeck();
 
-        if (deck1.getCards().isEmpty() || deck2.getCards().isEmpty()) {
+        if (deck1.getCards().isEmpty() || deck2.getCards().isEmpty()) { //Check, ob beide Spieler Karten im Deck haben: eigentlich unnöttig, weil immer 4 Karten im Deck durch curl
             throw new IllegalStateException("Both players must have cards in their decks to battle.");
         }
 
@@ -45,19 +46,18 @@ public class BattleService {
             rounds++;
             battleLog.add("Round " + rounds + ":");
 
-            // Zufällige Karten auswählen
+            //Zufällige Karten aus Deck wählen:
             Card card1 = getRandomCard(deck1);
             Card card2 = getRandomCard(deck2);
 
-            // Log hinzufügen
             battleLog.add(player1.getUsername() + " plays " + card1.getName());
             battleLog.add(player2.getUsername() + " plays " + card2.getName());
 
-            // Gewinner ermitteln
+            //Gewinner ermitteln:
             Card winner = determineWinner(card1, card2);
             if (winner == null) {
                 battleLog.add("It's a tie!");
-            } else if (winner == card1) {
+            } else if (winner == card1) { //Gewinner der Runde bekommt Karte aus Gegner-Deck:
                 battleLog.add(player1.getUsername() + " wins the round!");
                 deck2.getCards().remove(card2);
                 deck1.addCard(card2);
@@ -76,7 +76,7 @@ public class BattleService {
         } else if (deck2.getCards().isEmpty()) {
             battleLog.add(player1.getUsername() + " wins the battle!");
         } else {
-            battleLog.add("Battle ended in a draw after " + MAX_ROUNDS + " rounds.");
+            battleLog.add("Battle ended in a draw after " + rounds + " rounds.");
         }
 
         return battleLog;
@@ -88,67 +88,83 @@ public class BattleService {
     }
 
     private Card determineWinner(Card card1, Card card2) {
-        // Logs für Fehlerprüfung
+        //Logs für Debug:
         System.out.println("Determining winner between " + card1.getName() + " and " + card2.getName());
 
         //Goblin vs. Dragon: Dragon gewinnt immer
         if (card1.getName().contains("Goblin") && card2.getName().contains("Dragon")) {
+            logSpecialities(card2, card1);
             return card2;
         }
         if (card2.getName().contains("Goblin") && card1.getName().contains("Dragon")) {
+            logSpecialities(card1, card2);
             return card1;
         }
 
         //Ork vs. Wizard: Wizard gewinnt immer
         if (card1.getName().contains("Ork") && card2.getName().contains("Wizard")) {
+            logSpecialities(card2, card1);
             return card2;
         }
         if (card2.getName().contains("Ork") && card1.getName().contains("Wizard")) {
+            logSpecialities(card1, card2);
             return card1;
         }
 
         //Knight vs WaterSpell: WaterSpell gewinnt immer
         if (card1.getName().contains("Knight") && card2.getName().contains("WaterSpell")) {
+            logSpecialities(card2, card1);
             return card2;
         }
         if (card2.getName().contains("Knight") && card1.getName().contains("WaterSpell")) {
+            logSpecialities(card1, card2);
             return card1;
         }
 
         //Kraken vs Spell: Kraken gewinnt immer
         if (card1.getName().contains("Kraken") && card2 instanceof models.SpellCard) {
+            logSpecialities(card1, card2);
             return card1;
         }
         if (card2.getName().contains("Kraken") && card1 instanceof models.SpellCard) {
+            logSpecialities(card2, card1);
             return card2;
         }
 
         //FireElf vs Dragon: FireElf gewinnt immer
         if (card1.getName().contains("FireElf") && card2.getName().contains("Dragon")) {
+            logSpecialities(card1, card2);
             return card1;
         }
         if (card2.getName().contains("FireElf") && card1.getName().contains("Dragon")) {
+            logSpecialities(card2, card1);
             return card2;
         }
 
-        // Spell effectiveness
+        //Damage:
         double damage1 = card1.getDamage();
         double damage2 = card2.getDamage();
 
+        //Bei Spell-Cards: Damage anpassen:
         if (card1 instanceof models.SpellCard || card2 instanceof models.SpellCard) { //water > fire; fire > normal; normal > water (effective: doppelte damage; not effective: damage halbiert; no effect: damages bleiben gleich)
             damage1 = applyEffectiveness(card1, card2);
             damage2 = applyEffectiveness(card2, card1);
         }
 
         System.out.println("Damage: " + damage1 + " vs " + damage2);
+        battleLog.add("Damage: " + damage1 + " vs " + damage2);
 
         if (damage1 > damage2) {
             return card1;
         } else if (damage2 > damage1) {
             return card2;
         } else {
-            return null; // Unentschieden
+            return null; //Unentschieden
         }
+    }
+
+    private void logSpecialities(Card winner, Card loser) {
+        battleLog.add(winner.getName() + " wins against " + loser.getName());
     }
 
     private double applyEffectiveness(Card attacker, Card defender) {

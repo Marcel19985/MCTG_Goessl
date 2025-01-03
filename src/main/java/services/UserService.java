@@ -146,10 +146,8 @@ public class UserService {
 
                 // Lade das Deck des Benutzers
                 List<Card> deckCards = getDeck(user);
-                if (!deckCards.isEmpty()) {
+                if (!deckCards.isEmpty()) { //Dem User das Deck zuweisen falls vorhanden
                     user.getDeck().setCards(deckCards);
-                } else {
-                    System.out.println("Deck ist leer für Benutzer: " + user.getUsername());
                 }
 
                 return user;

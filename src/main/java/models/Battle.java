@@ -1,15 +1,13 @@
-package services;
+package models;
 
-import models.Card;
-import models.Deck;
-import models.User;
+import services.UserService;
 
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.Random;
 
-public class BattleService {
+public class Battle {
     private final List<String> battleLog = new ArrayList<>(); //BattleLog wird in Liste gespeichert, bevor es ausgegeben wird
 
     private static final Queue<User> battleQueue = new ConcurrentLinkedQueue<>(); //Warteschlange für Spieler, der auf einen Gegner wartet

@@ -11,7 +11,7 @@ import server.HttpRequestLine;
 import services.AuthorisationService;
 import services.PackageService;
 import services.UserService;
-import services.BattleService;
+import models.Battle;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class PostRequestHandler {
     private final AuthorisationService authorisationService = new AuthorisationService();
     private final UserService userService = new UserService();
     private final PackageService packageService = new PackageService();
-    private final BattleService battleService = new BattleService();
+    private final Battle battle = new Battle();
 
     public void handlePostRequest(HttpRequestLine requestLine, HttpHeaders headers, StringBuilder requestBody, BufferedWriter out) throws SQLException, IOException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -140,15 +140,15 @@ public class PostRequestHandler {
         User player = authorisationService.validateToken(headers);
 
         // Hinzufügen des Spielers zur BattleQueue
-        synchronized (battleService.getBattleQueue()) {
-            if (battleService.getBattleQueue().isEmpty()) {
+        synchronized (battle.getBattleQueue()) {
+            if (battle.getBattleQueue().isEmpty()) {
                 // Spieler wird der Queue hinzugefügt, wartet auf Gegner
-                battleService.addToBattleQueue(player);
+                battle.addToBattleQueue(player);
                 out.write("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nYou are waiting for an opponent.");
             } else {
                 //Spieler aus der Queue wird entfernt und Battle gestartet
-                User opponent = battleService.removeFromBattleQueue();
-                List<String> battleLog = battleService.startBattle(player, opponent);
+                User opponent = battle.removeFromBattleQueue();
+                List<String> battleLog = battle.startBattle(player, opponent);
 
                 //Log als JSON zurückgeben:
                 String response = new ObjectMapper().writeValueAsString(battleLog);

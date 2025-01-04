@@ -199,7 +199,7 @@ public class UserService {
 
     public boolean configureDeck(User user, List<UUID> cardIds) throws SQLException {
         if (cardIds.size() != 4) {
-            throw new IllegalArgumentException("A deck must consist of exactly2 4 cards.");
+            throw new IllegalArgumentException("A deck must consist of exactly 4 cards.");
         }
 
         try (Connection conn = DatabaseConnector.connect()) {

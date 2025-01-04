@@ -36,10 +36,6 @@ public class Deck {
         this.cards.remove(card);
     }
 
-    public boolean containsCard(UUID cardId) {
-        return cards.stream().anyMatch(card -> card.getId().equals(cardId));
-    }
-
     public Card getRandomCard() {
         Random random = new Random();
         return cards.get(random.nextInt(cards.size()));

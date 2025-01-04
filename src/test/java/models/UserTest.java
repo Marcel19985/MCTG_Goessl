@@ -72,6 +72,38 @@ public class UserTest {
         assertEquals(15, user.getCoins());
     }
 
+    @Test
+    public void testIncreaseWin() {
+
+        user.increaseWins();
+        assertEquals(1, user.getWins());
+        assertEquals(103, user.getElo());
+    }
+
+    @Test
+    public void testIncreaseLosses() {
+
+        user.increaseLosses();
+        assertEquals(1, user.getLosses());
+        assertEquals(95, user.getElo());
+    }
+
+    @Test
+    public void testIncreaseDraws() {
+
+        user.increaseDraws();
+        assertEquals(1, user.getDraws());
+        assertEquals(100, user.getElo());
+    }
+
+    @Test
+    public void testSet() {
+
+        user.increaseDraws();
+        assertEquals(1, user.getDraws());
+        assertEquals(100, user.getElo());
+    }
+
     @AfterEach
     public void tearDown() {
         user = null;

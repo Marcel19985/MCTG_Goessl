@@ -162,10 +162,6 @@ public class User {
         return coins;
     }
 
-    public void setCoins(int coins) {
-        this.coins = coins;
-    }
-
     public String getBio() {
         return bio;
     }
@@ -196,10 +192,6 @@ public class User {
 
     public Deck getDeck() {
         return deck;
-    }
-
-    public void setDeck(Deck deck) {
-        this.deck = deck;
     }
 
     public boolean buyPackage(Package pkg, UserService userService, Connection conn) throws SQLException {

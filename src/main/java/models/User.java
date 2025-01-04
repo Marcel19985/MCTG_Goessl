@@ -73,6 +73,20 @@ public class User {
         this.losses = losses;
     }
 
+    public void increaseWins() {
+        this.wins++;
+        this.elo += 3;
+    }
+
+    public void increaseDraws() {
+        this.draws++;
+    }
+
+    public void increaseLosses() {
+        this.losses++;
+        this.elo -= 5;
+    }
+
     // Default Konstruktor:
     public User() {
         this.stack = new Stack();

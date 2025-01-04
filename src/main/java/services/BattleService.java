@@ -10,10 +10,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.Random;
 
 public class BattleService {
-    private static final int MAX_ROUNDS = 100;
     private final List<String> battleLog = new ArrayList<>(); //BattleLog wird in Liste gespeichert, bevor es ausgegeben wird
 
-    private static final Queue<User> battleQueue = new ConcurrentLinkedQueue<>(); // Warteschlange für Spieler, der auf einen Gegner wartet
+    private static final Queue<User> battleQueue = new ConcurrentLinkedQueue<>(); //Warteschlange für Spieler, der auf einen Gegner wartet
 
     public static Queue<User> getBattleQueue() { //get Warteschlange
         return battleQueue;
@@ -21,12 +20,10 @@ public class BattleService {
 
     public static void addToBattleQueue(User user) { //Spieler in Queue einfügen
         battleQueue.add(user);
-        System.out.println("User added to queue: " + user.getUsername());
     }
 
     public static User removeFromBattleQueue() { //entfernt ersten Spieler aus Queue
         User user = battleQueue.poll();
-        System.out.println("User removed from queue: " + (user != null ? user.getUsername() : "None"));
         return user;
     }
 
@@ -39,27 +36,29 @@ public class BattleService {
         Deck deck1 = player1.getDeck();
         Deck deck2 = player2.getDeck();
 
-        if (deck1.getCards().isEmpty() || deck2.getCards().isEmpty()) { //Check, ob beide Spieler Karten im Deck haben: eigentlich unnöttig, weil immer 4 Karten im Deck durch curl
+        /*if (deck1.getCards().isEmpty() || deck2.getCards().isEmpty()) { //Check, ob beide Spieler Karten im Deck haben: eigentlich unnöttig, weil immer 4 Karten im Deck durch curl
             throw new IllegalStateException("Both players must have cards in their decks to battle.");
-        }
+        }*/ //!
 
+        int MAX_ROUNDS = 100;
         int rounds = 0;
         int winStreak1 = 0; //Special feature
         int winStreak2 = 0;
+
         while (rounds < MAX_ROUNDS && !deck1.getCards().isEmpty() && !deck2.getCards().isEmpty()) {
             rounds++;
             battleLog.add("Round " + rounds + ":");
 
             //Zufällige Karten aus Deck wählen:
-            Card card1 = getRandomCard(deck1);
-            Card card2 = getRandomCard(deck2);
+            Card card1 = deck1.getRandomCard();
+            Card card2 = deck2.getRandomCard();
 
             battleLog.add(player1.getUsername() + " plays " + card1.getName());
             battleLog.add(player2.getUsername() + " plays " + card2.getName());
 
-            if (winStreak1 > 2 || winStreak2 > 2) {//Spezialrunde
+            if (winStreak1 > 2 || winStreak2 > 2) {//Siegesserie
                 Random random = new Random();
-                int randomNumber = random.nextInt(3) + 1;
+                int randomNumber = random.nextInt(3) + 1; //Zufallszahl 1, 2 oder 3
                 if (winStreak1 > winStreak2) {
                     battleLog.add(player1.getUsername() + " has a win streak of " + winStreak1 + ". Damage of current card is enhanced by factor " + randomNumber);
                     card1.setDamage(card1.getDamage()*randomNumber);
@@ -74,17 +73,17 @@ public class BattleService {
             Card winner = determineWinner(card1, card2);
             if (winner == null) {
                 battleLog.add("It's a tie!");
-                deck2.getCards().remove(card2); //Additional feature 1: bei Unentschieden verlieren beide Spieler die Karten
-                deck1.getCards().remove(card1);
+                deck2.deleteCard(card2); //Additional feature: bei Unentschieden verlieren beide Spieler die Karten
+                deck1.deleteCard(card1);
             } else if (winner == card1) { //Gewinner der Runde bekommt Karte aus Gegner-Deck:
                 battleLog.add(player1.getUsername() + " wins the round!");
-                deck2.getCards().remove(card2);
-                deck1.addCard(card2);
+                deck2.deleteCard(card2);
+                deck1.deleteCard(card2);
                 winStreak1++;
                 winStreak2 = 0;
             } else {
                 battleLog.add(player2.getUsername() + " wins the round!");
-                deck1.getCards().remove(card1);
+                deck1.deleteCard(card1);
                 deck2.addCard(card1);
                 winStreak2++;
                 winStreak1 = 0;
@@ -96,29 +95,26 @@ public class BattleService {
         //Spielergebnisse:
         if (deck1.getCards().isEmpty()) {
             battleLog.add(player2.getUsername() + " wins the battle atfer " + rounds + " rounds.");
-            updateStats(player2, true, false);
-            updateStats(player1, false, false);
+            player2.increaseWins();
+            player1.increaseLosses();
         } else if (deck2.getCards().isEmpty()) {
             battleLog.add(player1.getUsername() + " wins the battle atfer " + rounds + " rounds.");
-            updateStats(player1, true, false);
-            updateStats(player2, false, false);
+            player1.increaseWins();
+            player2.increaseLosses();
         } else {
             battleLog.add("Battle ended in a draw after " + rounds + " rounds.");
-            updateStats(player1, false, true);
-            updateStats(player2, false, true);
+            player1.increaseDraws();
+            player2.increaseDraws();
         }
+        UserService userService = new UserService();
+        userService.updateUserStats(player1); //Datenbank aktualisieren
+        userService.updateUserStats(player2); //Datenbank aktualisieren
 
         return battleLog;
     }
 
-    private Card getRandomCard(Deck deck) {
-        Random random = new Random();
-        return deck.getCards().get(random.nextInt(deck.getCards().size()));
-    }
-
     private Card determineWinner(Card card1, Card card2) {
 
-        //Logs für Debug:
         System.out.println("Determining winner between " + card1.getName() + " and " + card2.getName());
 
         //Goblin vs. Dragon: Dragon gewinnt immer
@@ -176,7 +172,7 @@ public class BattleService {
         double damage2 = card2.getDamage();
 
         //Bei Spell-Cards: Damage anpassen:
-        if (card1 instanceof models.SpellCard || card2 instanceof models.SpellCard) { //water > fire; fire > normal; normal > water (effective: doppelte damage; not effective: damage halbiert; no effect: damages bleiben gleich)
+        if (Objects.equals(card1.getCardType(), "Spell") || Objects.equals(card2.getCardType(), "Spell")) { //water > fire; fire > normal; normal > water (effective: doppelte damage; not effective: damage halbiert; no effect: damages bleiben gleich)
             damage1 = applyEffectiveness(card1, card2);
             damage2 = applyEffectiveness(card2, card1);
         }
@@ -217,20 +213,5 @@ public class BattleService {
             return attacker.getDamage() / 2;
         }
         return attacker.getDamage(); //Keine Effektivität
-    }
-
-    private void updateStats(User player, boolean isWin, boolean isDraw) throws SQLException {
-        UserService userService = new UserService();
-        if (isWin) {
-            player.setElo(player.getElo() + 3);
-            player.setWins(player.getWins() + 1);
-        } else if (isDraw) {
-            player.setDraws(player.getDraws() + 1);
-        } else {
-            player.setElo(player.getElo() - 5);
-            player.setLosses(player.getLosses() + 1);
-        }
-
-        userService.updateUserStats(player); //Datenbank aktualisieren
     }
 }

@@ -2,10 +2,11 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public class Deck {
-    private final List<Card> cards;
+    private final List<Card> cards; //durch final kann cards Zeiger nicht auf eine andere Liste zeigen -> diese Liste kann aber noch verändert werden
 
     public Deck() {
         this.cards = new ArrayList<>();
@@ -31,8 +32,17 @@ public class Deck {
         this.cards.add(card);
     }
 
+    public void deleteCard(Card card) {
+        this.cards.remove(card);
+    }
+
     public boolean containsCard(UUID cardId) {
         return cards.stream().anyMatch(card -> card.getId().equals(cardId));
+    }
+
+    public Card getRandomCard() {
+        Random random = new Random();
+        return cards.get(random.nextInt(cards.size()));
     }
 
     @Override

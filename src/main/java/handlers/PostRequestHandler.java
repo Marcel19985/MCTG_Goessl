@@ -152,7 +152,7 @@ public class PostRequestHandler {
 
                 //Log als JSON zurückgeben:
                 String response = new ObjectMapper().writeValueAsString(battleLog);
-                out.write("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + response);
+                out.write("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + response + "\r\n\r\n");
             }
             out.flush();
         }

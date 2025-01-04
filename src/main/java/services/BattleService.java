@@ -94,9 +94,9 @@ public class BattleService {
 
         //Spielergebnisse:
         if (deck1.getCards().isEmpty()) {
-            battleLog.add(player2.getUsername() + " wins the battle!");
+            battleLog.add(player2.getUsername() + " wins the battle atfer " + rounds + " rounds.");
         } else if (deck2.getCards().isEmpty()) {
-            battleLog.add(player1.getUsername() + " wins the battle!");
+            battleLog.add(player1.getUsername() + " wins the battle atfer " + rounds + " rounds.");
         } else {
             battleLog.add("Battle ended in a draw after " + rounds + " rounds.");
         }
@@ -209,6 +209,6 @@ public class BattleService {
         if (attacker.getElementType() == Card.ElementType.WATER && defender.getElementType() == Card.ElementType.NORMAL) {
             return attacker.getDamage() / 2;
         }
-        return attacker.getDamage(); // Keine Effektivität
+        return attacker.getDamage(); //Keine Effektivität
     }
 }

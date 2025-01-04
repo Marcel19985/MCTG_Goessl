@@ -10,9 +10,7 @@ import java.sql.Connection; //für prepared statemenet object conn
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 public class UserService {
@@ -267,6 +265,59 @@ public class UserService {
         }
     }
 
+    public void updateUserStats(User user) throws SQLException {
+        String query = "UPDATE users SET elo = ?, wins = ?, draws = ?, losses = ? WHERE id = ?";
+        try (Connection conn = DatabaseConnector.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, user.getElo());
+            stmt.setInt(2, user.getWins());
+            stmt.setInt(3, user.getDraws());
+            stmt.setInt(4, user.getLosses());
+            stmt.setObject(5, user.getId());
+            stmt.executeUpdate();
+        }
+    }
+
+    public Map<String, Object> getUserStats(User user) throws SQLException {
+        String query = "SELECT username, elo, wins, draws, losses FROM users WHERE id = ?";
+        try (Connection conn = DatabaseConnector.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setObject(1, user.getId());
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    // Benutzerstatistiken in einer Map speichern
+                    Map<String, Object> userStats = new LinkedHashMap<>();
+                    userStats.put("username", rs.getString("username"));
+                    userStats.put("elo", rs.getInt("elo"));
+                    userStats.put("wins", rs.getInt("wins"));
+                    userStats.put("draws", rs.getInt("draws"));
+                    userStats.put("losses", rs.getInt("losses"));
+                    return userStats;
+                }
+            }
+        }
+        return null; // Benutzer nicht gefunden
+    }
+
+    public List<User> getAllUsersSortedByElo() throws SQLException {
+        String query = "SELECT id, username, elo, wins, draws, losses FROM users ORDER BY elo DESC";
+        List<User> users = new ArrayList<>();
+        try (Connection conn = DatabaseConnector.connect();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                User user = new User();
+                user.setId(UUID.fromString(rs.getString("id")));
+                user.setUsername(rs.getString("username"));
+                user.setElo(rs.getInt("elo"));
+                user.setWins(rs.getInt("wins"));
+                user.setDraws(rs.getInt("draws"));
+                user.setLosses(rs.getInt("losses"));
+                users.add(user);
+            }
+        }
+        return users;
+    }
 
 
 }

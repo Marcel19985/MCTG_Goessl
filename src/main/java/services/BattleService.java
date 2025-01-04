@@ -4,6 +4,7 @@ import models.Card;
 import models.Deck;
 import models.User;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.Random;
@@ -30,7 +31,7 @@ public class BattleService {
     }
 
     //Battle Logik:
-    public List<String> startBattle(User player1, User player2) {
+    public List<String> startBattle(User player1, User player2) throws SQLException {
         System.out.println("Starting battle between " + player1.getUsername() + " and " + player2.getUsername());
         System.out.println("Player 1 deck: " + player1.getDeck());
         System.out.println("Player 2 deck: " + player2.getDeck());
@@ -95,10 +96,16 @@ public class BattleService {
         //Spielergebnisse:
         if (deck1.getCards().isEmpty()) {
             battleLog.add(player2.getUsername() + " wins the battle atfer " + rounds + " rounds.");
+            updateStats(player2, true, false);
+            updateStats(player1, false, false);
         } else if (deck2.getCards().isEmpty()) {
             battleLog.add(player1.getUsername() + " wins the battle atfer " + rounds + " rounds.");
+            updateStats(player1, true, false);
+            updateStats(player2, false, false);
         } else {
             battleLog.add("Battle ended in a draw after " + rounds + " rounds.");
+            updateStats(player1, false, true);
+            updateStats(player2, false, true);
         }
 
         return battleLog;
@@ -210,5 +217,20 @@ public class BattleService {
             return attacker.getDamage() / 2;
         }
         return attacker.getDamage(); //Keine Effektivität
+    }
+
+    private void updateStats(User player, boolean isWin, boolean isDraw) throws SQLException {
+        UserService userService = new UserService();
+        if (isWin) {
+            player.setElo(player.getElo() + 3);
+            player.setWins(player.getWins() + 1);
+        } else if (isDraw) {
+            player.setDraws(player.getDraws() + 1);
+        } else {
+            player.setElo(player.getElo() - 5);
+            player.setLosses(player.getLosses() + 1);
+        }
+
+        userService.updateUserStats(player); //Datenbank aktualisieren
     }
 }

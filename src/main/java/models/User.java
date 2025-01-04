@@ -36,6 +36,43 @@ public class User {
     private int coins;
     private Deck deck;
 
+    private int elo = 100;
+    private int wins = 0;
+    private int draws = 0;
+    private int losses = 0;
+
+    public int getElo() {
+        return elo;
+    }
+
+    public void setElo(int elo) {
+        this.elo = elo;
+    }
+
+    public int getWins() {
+        return wins;
+    }
+
+    public void setWins(int wins) {
+        this.wins = wins;
+    }
+
+    public int getDraws() {
+        return draws;
+    }
+
+    public void setDraws(int draws) {
+        this.draws = draws;
+    }
+
+    public int getLosses() {
+        return losses;
+    }
+
+    public void setLosses(int losses) {
+        this.losses = losses;
+    }
+
     // Default Konstruktor:
     public User() {
         this.stack = new Stack();

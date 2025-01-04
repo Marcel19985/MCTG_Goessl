@@ -11,9 +11,7 @@ import services.UserService;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GetRequestHandler {
 
@@ -30,9 +28,9 @@ public class GetRequestHandler {
             } else if (requestLine.getPath().startsWith("/deck")) { //gibt deck aus
                 handleDeck(requestLine, headers, out);
             } else if ("/stats".equals(requestLine.getPath())) { //gibts stats aus
-                createResponseDoesNotExist(out);
+                handleUserStats(headers, out);
             } else if ("/scoreboard".equals(requestLine.getPath())) { //gibt scoreboard aus
-                createResponseDoesNotExist(out);
+                handleScoreboard(headers, out);
             } else if ("/tradings".equals(requestLine.getPath())) { //check trading deals
                 createResponseDoesNotExist(out);
             } else {
@@ -148,6 +146,41 @@ public class GetRequestHandler {
             jsonOutput.append("]");
             out.write("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + jsonOutput.toString());
         }
+        out.flush();
+    }
+
+    private void handleUserStats(HttpHeaders headers, BufferedWriter out) throws SQLException, IOException {
+        User user = authorisationService.validateToken(headers);
+
+        Map<String, Object> userStats = userService.getUserStats(user);
+
+        if (userStats != null) {
+            String jsonResponse = new ObjectMapper().writeValueAsString(userStats); //JSON zurückgeben
+            out.write("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + jsonResponse);
+        } else {
+            out.write("HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\nUser stats not found.");
+        }
+        out.flush();
+    }
+
+    private void handleScoreboard(HttpHeaders headers, BufferedWriter out) throws SQLException, IOException {
+        authorisationService.validateToken(headers);
+
+        List<User> users = userService.getAllUsersSortedByElo();
+        List<Map<String, Object>> scoreboard = new ArrayList<>();
+
+        for (User user : users) {
+            Map<String, Object> userStats = new LinkedHashMap<>();
+            userStats.put("username", user.getUsername());
+            userStats.put("elo", user.getElo());
+            userStats.put("wins", user.getWins());
+            userStats.put("draws", user.getDraws());
+            userStats.put("losses", user.getLosses());
+            scoreboard.add(userStats);
+        }
+
+        String jsonResponse = new ObjectMapper().writeValueAsString(scoreboard);
+        out.write("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + jsonResponse);
         out.flush();
     }
 

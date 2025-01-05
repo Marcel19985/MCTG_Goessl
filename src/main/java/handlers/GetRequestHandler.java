@@ -31,7 +31,7 @@ public class GetRequestHandler {
                 handleUserStats(headers, out);
             } else if ("/scoreboard".equals(requestLine.getPath())) { //gibt scoreboard aus
                 handleScoreboard(headers, out);
-            } else if ("/tradings".equals(requestLine.getPath())) { //check trading deals
+            } else if ("/tradings".equals(requestLine.getPath())) { //check trading deals -> nicht implementiert
                 createResponseDoesNotExist(out);
             } else {
                 out.write("HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\nEndpoint not found.");
@@ -57,12 +57,6 @@ public class GetRequestHandler {
         String username = pathParts[2]; //holt username aus Request
 
         User requestedUser = authorisationService.validateUser(headers, username); //Autorisierung: passen username und Token zusammen?
-
-        /*if (requestedUser == null) { //brauche ich das?
-            out.write("HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\nUser not found.");
-            out.flush();
-            return;
-        }*/
 
         String jsonResponse = requestedUser.toJson();
 

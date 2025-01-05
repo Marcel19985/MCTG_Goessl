@@ -26,8 +26,6 @@ public class PutRequestHandler {
                 handleDeckConfiguration(headers, requestBody, out);
             } else if (requestLine.getPath().startsWith("/users/")) { //Benutzer-Daten aktualisieren
                 handleUserUpdate(requestLine, headers, requestBody, out);
-            } else {
-                createResponseDoesNotExist(out);
             }
         } catch (IllegalArgumentException e) {
             out.write("HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\n" + e.getMessage());
@@ -76,11 +74,6 @@ public class PutRequestHandler {
         } else {
             out.write("HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/plain\r\n\r\nFailed to update user data.");
         }
-        out.flush();
-    }
-
-    public void createResponseDoesNotExist(BufferedWriter out) throws IOException {
-        out.write("HTTP/1.1 501 Not Implemented\r\nContent-Type: text/plain\r\n\r\nThis method is not implemented yet.");
         out.flush();
     }
 

@@ -40,7 +40,7 @@ public class PostRequestHandler {
                 handlePackageCreation(headers, requestBody, out);
             } else if ("/transactions/packages".equals(requestLine.getPath())) { //Acquire Package
                 handlePackageAcquisition(headers, out);
-            } else if (requestLine.getPath().startsWith("/tradings")) { //trade
+            } else if (requestLine.getPath().startsWith("/tradings")) { //trade -> nicht implementiert
                 createResponseDoesNotExist(out);
             } else if ("/battles".equals(requestLine.getPath())) { //battle
                 handleBattle(headers, out);

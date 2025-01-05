@@ -190,6 +190,10 @@ public class User {
         stack.removeCard(card);
     }
 
+    public void setDeck(Deck deck) {
+        this.deck = deck;
+    }
+
     public Deck getDeck() {
         return deck;
     }

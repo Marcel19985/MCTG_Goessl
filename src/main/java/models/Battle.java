@@ -34,10 +34,6 @@ public class Battle {
         Deck deck1 = player1.getDeck();
         Deck deck2 = player2.getDeck();
 
-        /*if (deck1.getCards().isEmpty() || deck2.getCards().isEmpty()) { //Check, ob beide Spieler Karten im Deck haben: eigentlich unnöttig, weil immer 4 Karten im Deck durch curl
-            throw new IllegalStateException("Both players must have cards in their decks to battle.");
-        }*/ //!
-
         int MAX_ROUNDS = 100;
         int rounds = 0;
         int winStreak1 = 0; //Special feature
@@ -91,7 +87,12 @@ public class Battle {
         }
 
         //Spielergebnisse:
-        if (deck1.getCards().isEmpty()) {
+        if (deck1.getCards().isEmpty() && deck2.getCards().isEmpty()) {
+            battleLog.add("Battle ended in a draw after " + rounds + " rounds.");
+            player1.increaseDraws();
+            player2.increaseDraws();
+        }
+        else if (deck1.getCards().isEmpty()) {
             battleLog.add(player2.getUsername() + " wins the battle atfer " + rounds + " rounds.");
             player2.increaseWins();
             player1.increaseLosses();

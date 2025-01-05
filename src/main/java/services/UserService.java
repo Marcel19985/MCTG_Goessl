@@ -1,9 +1,7 @@
 package services;
 
 import database.DatabaseConnector;
-import models.Card;
-import models.CardFactory;
-import models.User;
+import models.*;
 import models.Package;
 
 import java.sql.Connection; //für prepared statemenet object conn
@@ -61,19 +59,6 @@ public class UserService {
         }
         return null;  //Login fehlgeschlagen
     }
-
-    //Überprüfung, ob Token zu einem User gehört: wird vermutlich nicht in dieser Art verwendet werden
-    /*public boolean validateToken(String username, String token) throws SQLException {
-        try (Connection conn = DatabaseConnector.connect()) {
-            String query = "SELECT 1 FROM users WHERE username = ? AND token = ?";
-            PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, username);
-            stmt.setString(2, token);
-
-            ResultSet rs = stmt.executeQuery();
-            return rs.next();  //gibt true zurück, wenn Token valide ist
-        }
-    }*/
 
     //löscht alle Datensätze aus Tabelle users (wird für einen Test benötigt):
     public void clearTable() throws SQLException {
@@ -142,16 +127,40 @@ public class UserService {
                         rs.getInt("coins")
                 );
 
-                // Lade das Deck des Benutzers
-                List<Card> deckCards = getDeck(user);
-                if (!deckCards.isEmpty()) { //Dem User das Deck zuweisen falls vorhanden
-                    user.getDeck().setCards(deckCards);
+                List<Card> deckCards = getDeck(user); //Lade das Deck des Benutzers: (siehe Methode darunter)
+
+                if (!deckCards.isEmpty()) { //gibt Deck in Datenbank
+                    Deck newDeck = new Deck();
+                    newDeck.setCards(deckCards); //Weise Karten dem Deck zu
+
+                    user.setDeck(newDeck); //Weise Deck dem Benutzer zu
                 }
 
                 return user;
             }
         }
         return null; // Kein Benutzer mit dem angegebenen Token gefunden
+    }
+
+    public List<Card> getDeck(User user) throws SQLException {
+        String query = "SELECT c.card_id, c.name, c.damage, c.type, c.element_type " +
+                "FROM decks d JOIN cards c ON d.card_id = c.card_id " +
+                "WHERE d.user_id = ?"; //JOIN -> Karten müssen im Deck und in Cards vorhanden sein
+        List<Card> deck = new ArrayList<>();
+
+        try (Connection conn = DatabaseConnector.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setObject(1, user.getId());
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                UUID cardId = UUID.fromString(rs.getString("card_id"));
+                String name = rs.getString("name");
+                double damage = rs.getDouble("damage");
+                Card card = CardFactory.createCard(cardId, name, damage);
+                deck.add(card);
+            }
+        }
+        return deck;
     }
 
     public User getUserByUsername(String username) throws SQLException { //für Ausgabe von einem Userprofil
@@ -174,27 +183,6 @@ public class UserService {
             }
         }
         return null; // Benutzer nicht gefunden
-    }
-
-    public List<Card> getDeck(User user) throws SQLException {
-        String query = "SELECT c.card_id, c.name, c.damage, c.type, c.element_type " +
-                "FROM decks d JOIN cards c ON d.card_id = c.card_id " +
-                "WHERE d.user_id = ?"; //JOIN -> Karten müssen im Deck und in Cards vorhanden sein
-        List<Card> deck = new ArrayList<>();
-
-        try (Connection conn = DatabaseConnector.connect();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setObject(1, user.getId());
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                UUID cardId = UUID.fromString(rs.getString("card_id"));
-                String name = rs.getString("name");
-                double damage = rs.getDouble("damage");
-                Card card = CardFactory.createCard(cardId, name, damage);
-                deck.add(card);
-            }
-        }
-        return deck;
     }
 
     public boolean configureDeck(User user, List<UUID> cardIds) throws SQLException {
@@ -250,7 +238,6 @@ public class UserService {
             return true;
         }
     }
-
 
     public boolean updateUserData(String username, User updatedData) throws SQLException {
         String query = "UPDATE users SET name = ?, bio = ?, image = ? WHERE username = ?";
@@ -318,6 +305,5 @@ public class UserService {
         }
         return users;
     }
-
 
 }

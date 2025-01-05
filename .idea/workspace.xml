@@ -6,9 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="8baed113-4de9-4350-9dee-fb253f253015" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/handlers/GetRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/handlers/GetRequestHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/handlers/PostRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/handlers/PostRequestHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/BattleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Battle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/handlers/PutRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/handlers/PutRequestHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/Battle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Battle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/services/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/services/PackageServiceTest.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,18 +23,24 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Kotlin Class" />
-        <option value="JUnit5 Test Class" />
         <option value="Class" />
+        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/test/java/models/BattleTest.java" root0="SKIP_INSPECTION" />
+  </component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -44,6 +54,7 @@
   "keyToString": {
     "Application.Main.executor": "Run",
     "JUnit.AuthorisationServiceTest.executor": "Run",
+    "JUnit.BattleTest.executor": "Run",
     "JUnit.CardTest.executor": "Run",
     "JUnit.DeckTest.executor": "Run",
     "JUnit.HttpHeadersTest.executor": "Run",
@@ -74,7 +85,7 @@
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "MavenSettings",
+    "settings.editor.selected.configurable": "Errors",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -95,7 +106,18 @@
       <recent name="models" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.java in MCTG_Goessl">
+    <configuration name="All in MCTG_Goessl" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MCTG_Goessl" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <dir value="$PROJECT_DIR$/src/test/java" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="UserTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="MCTG_Goessl" />
       <extension name="coverage">
@@ -113,6 +135,19 @@
     </configuration>
     <configuration name="java in MCTG_Goessl" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="MCTG_Goessl" />
+      <option name="MAIN_CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/src/test/java" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="java in MCTG_Goessl" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MCTG_Goessl" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="directory" />
       <dir value="$PROJECT_DIR$/src/test/java" />
       <method v="2">
@@ -121,6 +156,8 @@
     </configuration>
     <configuration name="models in MCTG_Goessl" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="MCTG_Goessl" />
+      <option name="MAIN_CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="directory" />
       <dir value="$PROJECT_DIR$/src/test/java/models" />
       <method v="2">
@@ -137,6 +174,8 @@
     </configuration>
     <configuration name="services in MCTG_Goessl" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="MCTG_Goessl" />
+      <option name="MAIN_CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="directory" />
       <dir value="$PROJECT_DIR$/src/test/java/services" />
       <method v="2">
@@ -156,12 +195,19 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="JUnit.java in MCTG_Goessl" />
+      <item itemvalue="JUnit.models in MCTG_Goessl" />
+      <item itemvalue="JUnit.server in MCTG_Goessl" />
+      <item itemvalue="JUnit.services in MCTG_Goessl" />
+      <item itemvalue="JUnit.UserTest" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.UserTest" />
-        <item itemvalue="JUnit.services in MCTG_Goessl" />
+        <item itemvalue="JUnit.java in MCTG_Goessl" />
         <item itemvalue="JUnit.server in MCTG_Goessl" />
         <item itemvalue="JUnit.models in MCTG_Goessl" />
+        <item itemvalue="JUnit.services in MCTG_Goessl" />
         <item itemvalue="JUnit.java in MCTG_Goessl" />
       </list>
     </recent_temporary>
@@ -215,7 +261,8 @@
       <workItem from="1735758301332" duration="1197000" />
       <workItem from="1735841747677" duration="9231000" />
       <workItem from="1735913763258" duration="17945000" />
-      <workItem from="1735998966737" duration="14387000" />
+      <workItem from="1735998966737" duration="14897000" />
+      <workItem from="1736090157008" duration="14559000" />
     </task>
     <servers />
   </component>

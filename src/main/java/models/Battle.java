@@ -27,9 +27,6 @@ public class Battle {
 
     //Battle Logik:
     public List<String> startBattle(User player1, User player2) throws SQLException {
-        System.out.println("Starting battle between " + player1.getUsername() + " and " + player2.getUsername());
-        System.out.println("Player 1 deck: " + player1.getDeck());
-        System.out.println("Player 2 deck: " + player2.getDeck());
 
         Deck deck1 = player1.getDeck();
         Deck deck2 = player2.getDeck();
@@ -82,8 +79,6 @@ public class Battle {
                 winStreak2++;
                 winStreak1 = 0;
             }
-            System.out.println("Player 1 deck: " + player1.getDeck()); //!
-            System.out.println("Player 2 deck: " + player2.getDeck()); //!
         }
 
         //Spielergebnisse:
@@ -113,8 +108,6 @@ public class Battle {
     }
 
     private Card determineWinner(Card card1, Card card2) {
-
-        System.out.println("Determining winner between " + card1.getName() + " and " + card2.getName());
 
         //Goblin vs. Dragon: Dragon gewinnt immer
         if (card1.getName().contains("Goblin") && card2.getName().contains("Dragon")) {
@@ -176,7 +169,6 @@ public class Battle {
             damage2 = applyEffectiveness(card2, card1);
         }
 
-        System.out.println("Damage: " + damage1 + " vs " + damage2);
         battleLog.add("Damage: " + damage1 + " vs " + damage2);
 
         if (damage1 > damage2) {

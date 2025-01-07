@@ -6,14 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8baed113-4de9-4350-9dee-fb253f253015" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dokumentation/Beschreibungen und Anmerkungen zu MCTG.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Dokumentation/Beschreibungen und Anmerkungen zu MCTG.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dokumentation/Klassendiagramm_Semesterprojekt.drawio" beforeDir="false" afterPath="$PROJECT_DIR$/Dokumentation/Klassendiagramm_Semesterprojekt.drawio" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/models/BattleTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/models/BattleTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/models/CardTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/models/CardTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/models/DeckTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/models/DeckTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/models/PackageTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/models/PackageTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/models/StackTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/models/StackTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/models/UserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/models/UserTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/Battle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Battle.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -266,7 +259,7 @@
       <workItem from="1735998966737" duration="14897000" />
       <workItem from="1736090157008" duration="15560000" />
       <workItem from="1736181515466" duration="10671000" />
-      <workItem from="1736266620156" duration="2310000" />
+      <workItem from="1736266620156" duration="6870000" />
     </task>
     <servers />
   </component>

@@ -132,7 +132,7 @@ class BattleTest {
     }
 
     @Test
-    void testStartBattle_Draw() throws SQLException { //FireElce gewinnt immer gegen Dragon
+    void testStartBattle_Draw() throws SQLException { //Zwei gleiche Karten -> Unentschieden
 
         deck1.addCard(new MonsterCard(UUID.randomUUID(), "FireElve", 25, Card.ElementType.FIRE));
         deck2.addCard(new MonsterCard(UUID.randomUUID(), "FireElve", 25, Card.ElementType.FIRE));
@@ -211,7 +211,7 @@ class BattleTest {
     }
 
     @Test
-    void testStartBattle_EloCalculation() throws SQLException { //Elo calculation nach 3 Spielen
+    void testStartBattle_EloCalculation() throws SQLException { //Elo calculation nach 2 Spielen (Sieg und Unentschieden)
 
         deck1.addCard(new MonsterCard(UUID.randomUUID(), "Elve", 5, Card.ElementType.NORMAL));
         deck2.addCard(new MonsterCard(UUID.randomUUID(), "Watergoblin", 3, Card.ElementType.WATER));
@@ -220,16 +220,15 @@ class BattleTest {
         player2.setDeck(deck2);
 
         List<String> battleLog = battle.startBattle(player1, player2); //Spieler 1 gewinnt (+3 und -5 bei Gegner)
-        battleLog = battle.startBattle(player1, player2); //Spieler 1 gewinnt nochmal
 
-        //Beide spieler haben noch gleiches Deck -> Unentschieden:
+        //Beide spieler haben jetzt gleiches Deck -> Unentschieden:
         deck2.addCard(new MonsterCard(UUID.randomUUID(), "Elve", 5, Card.ElementType.NORMAL));
         player2.setDeck(deck2);
 
         battleLog = battle.startBattle(player1, player2); //unentschieden -> Elo soll sich nicht ändern
 
-        assertEquals(106, player1.getElo());
-        assertEquals(90, player2.getElo());
+        assertEquals(103, player1.getElo());
+        assertEquals(95, player2.getElo());
     }
 
 

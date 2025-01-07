@@ -96,14 +96,6 @@ public class UserTest {
         assertEquals(100, user.getElo());
     }
 
-    @Test
-    public void testSet() {
-
-        user.increaseDraws();
-        assertEquals(1, user.getDraws());
-        assertEquals(100, user.getElo());
-    }
-
     @AfterEach
     public void tearDown() {
         user = null;

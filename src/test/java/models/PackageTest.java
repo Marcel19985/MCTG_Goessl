@@ -23,17 +23,17 @@ class PackageTest {
 
     @Test
     public void testAddValidPackage() throws SQLException {
-        // Mock die Datenbankverbindung und PreparedStatement
+        //Mock Datenbankverbindung und PreparedStatement:
         Connection mockConnection = mock(Connection.class);
         PreparedStatement mockStatement = mock(PreparedStatement.class);
 
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
 
-        // Mock den DatabaseConnector
+        //Mock DatabaseConnector
         try (MockedStatic<DatabaseConnector> dbMock = mockStatic(DatabaseConnector.class)) {
             dbMock.when(DatabaseConnector::connect).thenReturn(mockConnection);
 
-            // Kartenliste erstellen
+            //Kartenliste erstellen:
             List<Card> cards = List.of(
                     CardFactory.createCard(UUID.randomUUID(), "FireGoblin", 10.0),
                     CardFactory.createCard(UUID.randomUUID(), "WaterSpell", 15.0),
@@ -42,14 +42,13 @@ class PackageTest {
                     CardFactory.createCard(UUID.randomUUID(), "WaterGoblin", 30.0)
             );
 
-            // Testlogik
-            Package pkg = new Package(cards);
+            Package pkg = new Package(cards); //Package erstellen
             PackageService packageService = new PackageService();
 
             boolean result = packageService.addPackage(pkg);
             assertTrue(result);
 
-            // Verifiziere, dass SQL-Abfragen ausgeführt wurden
+            //Verifiziere, dass SQL-Abfragen ausgeführt wurden:
             verify(mockStatement, times(1)).executeUpdate();
         }
     }

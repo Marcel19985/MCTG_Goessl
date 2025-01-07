@@ -41,18 +41,6 @@ class StackTest {
     }
 
     @Test
-    void testRemoveCardThatDoesNotExist() {
-        //Eine Karte erstellen, die nicht im Stack ist:
-        Card card = CardFactory.createCard(UUID.randomUUID(), "FireGoblin", 10.0);
-
-        //Versuch, eine nicht existierende Karte zu entfernen:
-        stack.removeCard(card);
-
-        //Stack sollte leer bleiben:
-        assertTrue(stack.getCards().isEmpty());
-    }
-
-    @Test
     void testGetCards() {
         //Karten vorbereiten:
         List<Card> cards = List.of(

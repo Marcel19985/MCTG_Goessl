@@ -14,7 +14,7 @@ class DeckTest {
 
     @BeforeEach
     void setUp() {
-        deck = new Deck(); // Ein leeres Deck initialisieren
+        deck = new Deck(); //leeres Deck initialisieren
     }
 
     @Test
@@ -31,7 +31,7 @@ class DeckTest {
 
         //Überprüfen, ob Karten korrekt gesetzt wurden:
         assertEquals(4, deck.getCards().size());
-        assertEquals("FireDragon", deck.getCards().get(0).getName());
+        assertEquals("FireDragon", deck.getCards().get(0).getName()); //Name der ersten Karte prüfen
     }
 
     @Test
@@ -64,7 +64,7 @@ class DeckTest {
     }
 
     @Test
-    void testToString() {
+    void testToString() { //Prüfen, ob alle Kartennamen im Deck sind
         //Liste mit 4 Karten:
         List<Card> cards = List.of(
                 CardFactory.createCard(UUID.randomUUID(), "FireDragon", 20.0),

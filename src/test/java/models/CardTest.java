@@ -49,7 +49,7 @@ class CardTest {
     }
 
     @Test
-    void testInvalidElementTypeHandling() {
+    void testElementTypeNormalHandling() { //Kein Type im name angegeben
         UUID id = UUID.randomUUID();
         String name = "UnknownCard";
         double damage = 10.0;
@@ -60,7 +60,7 @@ class CardTest {
     }
 
     @Test
-    void testFactoryCreatesMonsterCard() {
+    void testFactoryCreatesMonsterCard() { //Monster im Namen angegeben
         UUID id = UUID.randomUUID();
         String name = "FireMonster";
         double damage = 25.0;
@@ -72,7 +72,7 @@ class CardTest {
     }
 
     @Test
-    void testFactoryCreatesSpellCard() {
+    void testFactoryCreatesSpellCard() { //Spell im Namen angegeben
         UUID id = UUID.randomUUID();
         String name = "WaterSpell";
         double damage = 15.0;

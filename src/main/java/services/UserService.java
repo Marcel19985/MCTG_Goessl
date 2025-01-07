@@ -187,7 +187,7 @@ public class UserService {
 
     public boolean configureDeck(User user, List<UUID> cardIds) throws SQLException {
         if (cardIds.size() != 4) {
-            throw new IllegalArgumentException("A deck must consist of exactly 4 cards.");
+            throw new IllegalStateException("A deck must consist of exactly 4 cards."); //!!!
         }
 
         try (Connection conn = DatabaseConnector.connect()) {
@@ -210,7 +210,7 @@ public class UserService {
                         );
                         newDeckCards.add(card);
                     } else {
-                        throw new IllegalArgumentException("User does not own all the specified cards.");
+                        throw new IllegalStateException("User does not own all the specified cards."); //!!!
                     }
                 }
             }

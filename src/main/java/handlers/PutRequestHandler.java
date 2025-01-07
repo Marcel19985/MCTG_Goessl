@@ -27,8 +27,11 @@ public class PutRequestHandler {
             } else if (requestLine.getPath().startsWith("/users/")) { //Benutzer-Daten aktualisieren
                 handleUserUpdate(requestLine, headers, requestBody, out);
             }
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalStateException e) { //!!!
             out.write("HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\n" + e.getMessage());
+            out.flush();
+        } catch (IllegalArgumentException e) { //!!!
+            out.write("HTTP/1.1 401 Unauthorized\r\nContent-Type: text/plain\r\n\r\n" + e.getMessage());
             out.flush();
         } catch (SQLException e) {
             e.printStackTrace();

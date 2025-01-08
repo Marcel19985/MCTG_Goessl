@@ -73,7 +73,7 @@ public class UserService {
         String updateCoinsQuery = "UPDATE users SET coins = ? WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(updateCoinsQuery)) {
             stmt.setInt(1, user.getCoins());
-            stmt.setObject(2, user.getId()); //!maybe getter verwenden
+            stmt.setObject(2, user.getId());
             stmt.executeUpdate();
         }
     }
@@ -187,7 +187,7 @@ public class UserService {
 
     public boolean configureDeck(User user, List<UUID> cardIds) throws SQLException {
         if (cardIds.size() != 4) {
-            throw new IllegalStateException("A deck must consist of exactly 4 cards."); //!!!
+            throw new IllegalStateException("A deck must consist of exactly 4 cards.");
         }
 
         try (Connection conn = DatabaseConnector.connect()) {
@@ -210,7 +210,7 @@ public class UserService {
                         );
                         newDeckCards.add(card);
                     } else {
-                        throw new IllegalStateException("User does not own all the specified cards."); //!!!
+                        throw new IllegalStateException("User does not own all the specified cards.");
                     }
                 }
             }

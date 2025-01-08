@@ -120,8 +120,16 @@ public class PostRequestHandler {
     private void handlePackageAcquisition(HttpHeaders headers, BufferedWriter out) throws SQLException, IOException {
 
         User user = authorisationService.validateToken(headers); //Benutzer mit Token autorisieren
+        boolean success = false;
+        try {
+            success = packageService.acquirePackage(user, userService); //Paket erwerben
+        } catch (IllegalStateException e) {
+            //Antwort für ungültige Anfragen:
+            out.write("HTTP/1.1 409 Conflict\r\nContent-Type: text/plain\r\n\r\n" + e.getMessage());
+            out.flush();
+            return;
+        }
 
-        boolean success = packageService.acquirePackage(user, userService); //Paket erwerben
         if (success) {
             out.write("HTTP/1.1 201 Created\r\nContent-Type: text/plain\r\n\r\nPackage acquired successfully.");
         } else {
